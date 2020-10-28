@@ -241,8 +241,6 @@ function gutenberg_create_template_auto_drafts() {
 	}
 
 	$parent_theme = $theme->parent();
-			
-
 	if ( $parent_theme ) {
 		$parent_stylesheet = $parent_theme->get_stylesheet();
 
