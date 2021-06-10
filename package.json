@@ -1,6 +1,6 @@
 {
 	"name": "gutenberg",
-	"version": "10.8.0-rc.1",
+	"version": "10.8.0",
 	"private": true,
 	"description": "A new WordPress editor experience.",
 	"author": "The WordPress Contributors",
@@ -141,6 +141,7 @@
 		"@wordpress/postcss-themes": "file:packages/postcss-themes",
 		"@wordpress/prettier-config": "file:packages/prettier-config",
 		"@wordpress/project-management-automation": "file:packages/project-management-automation",
+		"@wordpress/readable-js-assets-webpack-plugin": "file:packages/readable-js-assets-webpack-plugin",
 		"@wordpress/scripts": "file:packages/scripts",
 		"@wordpress/stylelint-config": "file:packages/stylelint-config",
 		"appium": "1.20.2",
