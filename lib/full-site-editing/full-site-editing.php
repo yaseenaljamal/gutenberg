@@ -35,10 +35,7 @@ function gutenberg_remove_legacy_pages() {
 	if ( isset( $submenu['themes.php'] ) ) {
 		$indexes_to_remove = array();
 		foreach ( $submenu['themes.php'] as $index => $menu_item ) {
-			if (
-				false !== strpos( $menu_item[2], 'customize.php' ) ||
-				false !== strpos( $menu_item[2], 'gutenberg-widgets' )
-			) {
+			if ( false !== strpos( $menu_item[2], 'gutenberg-widgets' ) ) {
 				$indexes_to_remove[] = $index;
 			}
 		}
@@ -63,7 +60,7 @@ function gutenberg_adminbar_items( $wp_admin_bar ) {
 		return;
 	}
 
-	// Remove customizer link.
+	// Remove customizer links.
 	$wp_admin_bar->remove_node( 'customize' );
 	$wp_admin_bar->remove_node( 'customize-background' );
 	$wp_admin_bar->remove_node( 'customize-header' );
@@ -82,6 +79,40 @@ function gutenberg_adminbar_items( $wp_admin_bar ) {
 }
 
 add_action( 'admin_bar_menu', 'gutenberg_adminbar_items', 50 );
+
+/**
+ * Removes the legacy core components from the Customizer.
+ *
+ * @param array $components Core Customizer components list.
+ * @return array Modified components list.
+ */
+function gutenberg_remove_customizer_components( $components ) {
+	if ( ! gutenberg_is_fse_theme() ) {
+		return $components;
+	}
+
+	$index = array_search( 'nav_menus', $components, true );
+	if ( false !== $index ) {
+		unset( $components[ $index ] );
+	}
+
+	return $components;
+}
+add_filter( 'customize_loaded_components', 'gutenberg_remove_customizer_components' );
+
+/**
+ * Removes lagecy Customizer sections for FSE themes.
+ *
+ * @param WP_Customize_Manager $wp_customize The customize manager instance.
+ */
+function gutenberg_remove_customizer_sections( $wp_customize ) {
+	if ( ! gutenberg_is_fse_theme() ) {
+		return;
+	}
+
+	$wp_customize->remove_control( 'custom_css' );
+}
+add_action( 'customize_register', 'gutenberg_remove_customizer_sections', 50 );
 
 /**
  * Tells the script loader to load the scripts and styles of custom block on site editor screen.
