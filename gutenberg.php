@@ -18,7 +18,7 @@
 
 // GitHub Updater filters.
 add_filter(
-	'github_updater_override_dot_org',
+	'gu_override_dot_org',
 	function ( $overrides ) {
 		return array_merge(
 			$overrides,
@@ -27,7 +27,7 @@ add_filter(
 	}
 );
 add_filter(
-	'github_updater_release_asset_rollback',
+	'gu_release_asset_rollback',
 	function ( $rollback, $file ) {
 		if ( $file === plugin_basename( __FILE__ ) ) {
 			return [ 'gutenberg-nightly' ];
@@ -36,7 +36,7 @@ add_filter(
 	10,
 	2
 );
-add_filter( 'github_updater_no_release_asset_branches', '__return_true' );
+add_filter( 'gu_no_release_asset_branches', '__return_true' );
 // End GitHub Updater filters.
 
 
