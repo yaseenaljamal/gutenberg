@@ -46,10 +46,13 @@ export default function Table( { templateType } ) {
 			} = select( coreStore );
 
 			return {
-				templates: getEntityRecords( 'postType', templateType ),
+				templates: getEntityRecords( 'postType', templateType, {
+					per_page: -1,
+				} ),
 				isLoading: ! hasFinishedResolution( 'getEntityRecords', [
 					'postType',
 					templateType,
+					{ per_page: -1 },
 				] ),
 				postType: getPostType( templateType ),
 			};
@@ -109,8 +112,7 @@ export default function Table( { templateType } ) {
 					>
 						<td className="edit-site-list-table-column" role="cell">
 							<a
-								href={ addQueryArgs( '', {
-									page: 'gutenberg-edit-site',
+								href={ addQueryArgs( window.location.href, {
 									postId: template.id,
 									postType: template.type,
 								} ) }
