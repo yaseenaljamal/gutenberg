@@ -6,13 +6,8 @@
 
  * Requires at least: 5.8
  * Requires PHP: 5.6
-<<<<<<< HEAD
- * Version: 12.9.20220317
+ * Version: 12.9.20220318
  * Author: Gutenberg Team and Birgit Pauli-Haack (Gutenberg Times)
-=======
- * Version: 12.8.1
- * Author: Gutenberg Team
->>>>>>> upstream/trunk
  * Text Domain: gutenberg
  * GitHub Plugin URI: bph/gutenberg
  * Primary Branch: trunk
