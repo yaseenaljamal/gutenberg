@@ -222,7 +222,7 @@ Add an image or video with a text overlay — great for headers. ([Source](https
 -	**Name:** core/cover
 -	**Category:** media
 -	**Supports:** align, anchor, color (~~background~~, ~~text~~), spacing (padding), ~~html~~
--	**Attributes:** allowedBlocks, alt, backgroundType, contentPosition, customGradient, customOverlayColor, dimRatio, focalPoint, gradient, hasParallax, id, isDark, isRepeated, minHeight, minHeightUnit, overlayColor, templateLock, url
+-	**Attributes:** allowedBlocks, alt, backgroundType, contentPosition, customGradient, customOverlayColor, dimRatio, focalPoint, gradient, hasParallax, id, isDark, isRepeated, minHeight, minHeightUnit, overlayColor, templateLock, url, useFeaturedImage
 
 ## Embed
 
@@ -384,7 +384,7 @@ A collection of blocks that allow visitors to get around your site. ([Source](ht
 -	**Name:** core/navigation
 -	**Category:** theme
 -	**Supports:** align (full, wide), anchor, inserter, spacing (blockGap, units), typography (fontSize, lineHeight), ~~html~~
--	**Attributes:** __unstableLocation, backgroundColor, customBackgroundColor, customOverlayBackgroundColor, customOverlayTextColor, customTextColor, hasIcon, openSubmenusOnClick, overlayBackgroundColor, overlayMenu, overlayTextColor, ref, rgbBackgroundColor, rgbTextColor, showSubmenuIcon, textColor
+-	**Attributes:** __unstableLocation, backgroundColor, customBackgroundColor, customOverlayBackgroundColor, customOverlayTextColor, customTextColor, hasIcon, maxNestingLevel, openSubmenusOnClick, overlayBackgroundColor, overlayMenu, overlayTextColor, ref, rgbBackgroundColor, rgbTextColor, showSubmenuIcon, textColor
 
 ## Navigation Area
 
