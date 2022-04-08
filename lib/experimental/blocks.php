@@ -35,24 +35,25 @@ if ( ! function_exists( 'build_comment_query_vars_from_block' ) ) {
 			$comment_args['hierarchical'] = false;
 		}
 
-		$per_page     = get_option( 'comments_per_page' );
-		$default_page = get_option( 'default_comments_page' );
+		if ( get_option( 'page_comments' ) === '1' || get_option( 'page_comments' ) === true ) {
+			$per_page     = get_option( 'comments_per_page' );
+			$default_page = get_option( 'default_comments_page' );
+			if ( $per_page > 0 ) {
+				$comment_args['number'] = $per_page;
 
-		if ( $per_page > 0 ) {
-			$comment_args['number'] = $per_page;
-
-			$page = (int) get_query_var( 'cpage' );
-			if ( $page ) {
-				$comment_args['paged'] = $page;
-			} elseif ( 'oldest' === $default_page ) {
-				$comment_args['paged'] = 1;
-			} elseif ( 'newest' === $default_page ) {
-				$comment_args['paged'] = (int) ( new WP_Comment_Query( $comment_args ) )->max_num_pages;
-			}
-			// Set the `cpage` query var to ensure the previous and next pagination links are correct
-			// when inheriting the Discussion Settings.
-			if ( 0 === $page && isset( $comment_args['paged'] ) && $comment_args['paged'] > 0 ) {
-				set_query_var( 'cpage', $comment_args['paged'] );
+				$page = (int) get_query_var( 'cpage' );
+				if ( $page ) {
+					$comment_args['paged'] = $page;
+				} elseif ( 'oldest' === $default_page ) {
+					$comment_args['paged'] = 1;
+				} elseif ( 'newest' === $default_page ) {
+					$comment_args['paged'] = (int) ( new WP_Comment_Query( $comment_args ) )->max_num_pages;
+				}
+				// Set the `cpage` query var to ensure the previous and next pagination links are correct
+				// when inheriting the Discussion Settings.
+				if ( 0 === $page && isset( $comment_args['paged'] ) && $comment_args['paged'] > 0 ) {
+					set_query_var( 'cpage', $comment_args['paged'] );
+				}
 			}
 		}
 
@@ -153,6 +154,15 @@ if ( ! function_exists( 'gutenberg_rest_comment_set_children_as_embeddable' ) ) 
 add_action( 'rest_api_init', 'gutenberg_rest_comment_set_children_as_embeddable' );
 
 /**
+ * Returns whether the quote v2 is enabled by the user.
+ *
+ * @return boolean
+ */
+function gutenberg_is_quote_v2_enabled() {
+	return get_option( 'gutenberg-experiments' ) && array_key_exists( 'gutenberg-quote-v2', get_option( 'gutenberg-experiments' ) );
+}
+
+/**
  * Sets a global JS variable used to trigger the availability of the experimental blocks.
  */
 function gutenberg_enable_experimental_blocks() {
@@ -160,7 +170,7 @@ function gutenberg_enable_experimental_blocks() {
 		wp_add_inline_script( 'wp-block-library', 'window.__experimentalEnableListBlockV2 = true', 'before' );
 	}
 
-	if ( get_option( 'gutenberg-experiments' ) && array_key_exists( 'gutenberg-quote-v2', get_option( 'gutenberg-experiments' ) ) ) {
+	if ( gutenberg_is_quote_v2_enabled() ) {
 		wp_add_inline_script( 'wp-block-library', 'window.__experimentalEnableQuoteBlockV2 = true', 'before' );
 	}
 }
