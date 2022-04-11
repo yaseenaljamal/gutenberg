@@ -107,9 +107,9 @@ Display content in multiple columns, with blocks added to each column. ([Source]
 -	**Supports:** align (full, wide), anchor, color (background, gradients, link, text), spacing (blockGap, margin, padding), ~~html~~
 -	**Attributes:** isStackedOnMobile, verticalAlignment
 
-## Comment Author Avatar
+## Comment Author Avatar (deprecated)
 
-Displays the avatar of the comment's author. ([Source](https://github.com/WordPress/gutenberg/tree/trunk/packages/block-library/src/comment-author-avatar))
+This block is deprecated. Please use the Avatar block instead. ([Source](https://github.com/WordPress/gutenberg/tree/trunk/packages/block-library/src/comment-author-avatar))
 
 -	**Name:** core/comment-author-avatar
 -	**Category:** theme
@@ -485,13 +485,13 @@ This block is deprecated. Please use the Comments Query Loop block instead. ([So
 -	**Supports:** ~~html~~, ~~inserter~~
 -	**Attributes:** commentId
 
-## Post Comments
+## Post Comments (deprecated)
 
-Display a post's comments. ([Source](https://github.com/WordPress/gutenberg/tree/trunk/packages/block-library/src/post-comments))
+This block is deprecated. Please use the Comments Query Loop block instead. ([Source](https://github.com/WordPress/gutenberg/tree/trunk/packages/block-library/src/post-comments))
 
 -	**Name:** core/post-comments
 -	**Category:** theme
--	**Supports:** align (full, wide), color (background, gradients, link, text), typography (fontSize, lineHeight), ~~html~~
+-	**Supports:** align (full, wide), color (background, gradients, link, text), typography (fontSize, lineHeight), ~~html~~, ~~inserter~~
 -	**Attributes:** textAlign
 
 ## Post Comments Count
