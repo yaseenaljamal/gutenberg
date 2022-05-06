@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { render as RTLrender, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 /**
@@ -15,16 +15,6 @@ import { useState } from '@wordpress/element';
 import UnitControl from '..';
 import { parseQuantityAndUnitFromRawValue } from '../utils';
 import type { UnitControlOnChangeCallback } from '../types';
-
-function render( jsx: React.ReactElement ) {
-	return {
-		user: userEvent.setup( {
-			// Avoids timeout errors (https://github.com/testing-library/user-event/issues/565#issuecomment-1064579531).
-			delay: null,
-		} ),
-		...RTLrender( jsx ),
-	};
-}
 
 const getInput = ( {
 	isInputTypeText = false,
@@ -98,6 +88,15 @@ const ControlledSyncUnits = () => {
 };
 
 describe( 'UnitControl', () => {
+	beforeEach( () => {
+		jest.useFakeTimers();
+	} );
+
+	afterEach( () => {
+		jest.runOnlyPendingTimers();
+		jest.useRealTimers();
+	} );
+
 	describe( 'Basic rendering', () => {
 		it( 'should render', () => {
 			render( <UnitControl /> );
@@ -132,12 +131,7 @@ describe( 'UnitControl', () => {
 		} );
 
 		it( 'should render label if single units', () => {
-			render(
-				<UnitControl
-					units={ [ { value: '%', label: '%' } ] }
-					value="30%"
-				/>
-			);
+			render( <UnitControl units={ [ { value: '%', label: '%' } ] } /> );
 
 			const select = screen.queryByRole( 'combobox' );
 			const label = screen.getByText( '%' );
@@ -149,12 +143,14 @@ describe( 'UnitControl', () => {
 
 	describe( 'Value', () => {
 		it( 'should update value on change', async () => {
+			const user = userEvent.setup( {
+				advanceTimers: jest.advanceTimersByTime,
+			} );
+
 			let state = '50px';
 			const setState = jest.fn( ( value ) => ( state = value ) );
 
-			const { user } = render(
-				<UnitControl value={ state } onChange={ setState } />
-			);
+			render( <UnitControl value={ state } onChange={ setState } /> );
 
 			const input = getInput();
 			await user.clear( input );
@@ -169,13 +165,15 @@ describe( 'UnitControl', () => {
 		} );
 
 		it( 'should increment value on UP press', async () => {
+			const user = userEvent.setup( {
+				advanceTimers: jest.advanceTimersByTime,
+			} );
+
 			let state: string | undefined = '50px';
 			const setState: UnitControlOnChangeCallback = ( nextState ) =>
 				( state = nextState );
 
-			const { user } = render(
-				<UnitControl value={ state } onChange={ setState } />
-			);
+			render( <UnitControl value={ state } onChange={ setState } /> );
 
 			const input = getInput();
 			await user.type( input, '{ArrowUp}' );
@@ -184,13 +182,15 @@ describe( 'UnitControl', () => {
 		} );
 
 		it( 'should increment value on UP + SHIFT press, with step', async () => {
+			const user = userEvent.setup( {
+				advanceTimers: jest.advanceTimersByTime,
+			} );
+
 			let state: string | undefined = '50px';
 			const setState: UnitControlOnChangeCallback = ( nextState ) =>
 				( state = nextState );
 
-			const { user } = render(
-				<UnitControl value={ state } onChange={ setState } />
-			);
+			render( <UnitControl value={ state } onChange={ setState } /> );
 
 			const input = getInput();
 			await user.type( input, '{Shift>}{ArrowUp}{/Shift}' );
@@ -199,13 +199,15 @@ describe( 'UnitControl', () => {
 		} );
 
 		it( 'should decrement value on DOWN press', async () => {
+			const user = userEvent.setup( {
+				advanceTimers: jest.advanceTimersByTime,
+			} );
+
 			let state: string | number | undefined = 50;
 			const setState: UnitControlOnChangeCallback = ( nextState ) =>
 				( state = nextState );
 
-			const { user } = render(
-				<UnitControl value={ state } onChange={ setState } />
-			);
+			render( <UnitControl value={ state } onChange={ setState } /> );
 
 			const input = getInput();
 			await user.type( input, '{ArrowDown}' );
@@ -214,13 +216,15 @@ describe( 'UnitControl', () => {
 		} );
 
 		it( 'should decrement value on DOWN + SHIFT press, with step', async () => {
+			const user = userEvent.setup( {
+				advanceTimers: jest.advanceTimersByTime,
+			} );
+
 			let state: string | number | undefined = 50;
 			const setState: UnitControlOnChangeCallback = ( nextState ) =>
 				( state = nextState );
 
-			const { user } = render(
-				<UnitControl value={ state } onChange={ setState } />
-			);
+			render( <UnitControl value={ state } onChange={ setState } /> );
 
 			const input = getInput();
 			await user.type( input, '{Shift>}{ArrowDown}{/Shift}' );
@@ -229,11 +233,15 @@ describe( 'UnitControl', () => {
 		} );
 
 		it( 'should cancel change when ESCAPE key is pressed', async () => {
+			const user = userEvent.setup( {
+				advanceTimers: jest.advanceTimersByTime,
+			} );
+
 			let state: string | number | undefined = 50;
 			const setState: UnitControlOnChangeCallback = ( nextState ) =>
 				( state = nextState );
 
-			const { user } = render(
+			render(
 				<UnitControl
 					value={ state }
 					onChange={ setState }
@@ -249,13 +257,17 @@ describe( 'UnitControl', () => {
 			expect( input.value ).toBe( '300px' );
 			expect( state ).toBe( 50 );
 
-			user.keyboard( '{Escape}' );
+			await user.keyboard( '{Escape}' );
 
 			expect( input.value ).toBe( '50' );
 			expect( state ).toBe( 50 );
 		} );
 
 		it( 'should run onBlur callback when quantity input is blurred', async () => {
+			const user = userEvent.setup( {
+				advanceTimers: jest.advanceTimersByTime,
+			} );
+
 			const onChangeSpy = jest.fn();
 			const onBlurSpy = jest.fn();
 
@@ -265,36 +277,32 @@ describe( 'UnitControl', () => {
 				state = nextState;
 			};
 
-			const { user } = render(
-				<>
-					<button>Click me</button>
-					<UnitControl
-						value={ state }
-						onChange={ setState }
-						onBlur={ onBlurSpy }
-					/>
-				</>
+			render(
+				<UnitControl
+					value={ state }
+					onChange={ setState }
+					onBlur={ onBlurSpy }
+				/>
 			);
 
 			const input = getInput();
 			await user.clear( input );
 			await user.type( input, '41' );
 
-			await waitFor( () =>
-				expect( onChangeSpy ).toHaveBeenCalledTimes( 3 )
-			);
+			expect( onChangeSpy ).toHaveBeenCalledTimes( 3 );
 			expect( onChangeSpy ).toHaveBeenLastCalledWith( '41%' );
 
-			// Clicking on the button should cause the `onBlur` callback to fire.
-			const button = screen.getByRole( 'button' );
-			await user.click( button );
+			// Clicking document.body to trigger a blur event on the input.
+			await user.click( document.body );
 
-			await waitFor( () =>
-				expect( onBlurSpy ).toHaveBeenCalledTimes( 1 )
-			);
+			expect( onBlurSpy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should invoke onChange and onUnitChange callbacks when isPressEnterToChange is true and the component is blurred with an uncommitted value', async () => {
+			const user = userEvent.setup( {
+				advanceTimers: jest.advanceTimersByTime,
+			} );
+
 			const onUnitChangeSpy = jest.fn();
 			const onChangeSpy = jest.fn();
 
@@ -304,16 +312,13 @@ describe( 'UnitControl', () => {
 				state = nextState;
 			};
 
-			const { user } = render(
-				<>
-					<button>Click me</button>
-					<UnitControl
-						value={ state }
-						onChange={ setState }
-						onUnitChange={ onUnitChangeSpy }
-						isPressEnterToChange
-					/>
-				</>
+			render(
+				<UnitControl
+					value={ state }
+					onChange={ setState }
+					onUnitChange={ onUnitChangeSpy }
+					isPressEnterToChange
+				/>
 			);
 
 			// Input type is `text` when the `isPressEnterToChange` prop is passed
@@ -323,15 +328,12 @@ describe( 'UnitControl', () => {
 
 			// This is because `isPressEnterToChange` is `true`
 			expect( onChangeSpy ).not.toHaveBeenCalled();
+			expect( onUnitChangeSpy ).not.toHaveBeenCalled();
 
-			// Clicking on the button should cause the `onBlur` callback to fire.
-			const button = screen.getByRole( 'button' );
-			await user.click( button );
+			// Clicking document.body to trigger a blur event on the input.
+			await user.click( document.body );
 
-			await waitFor( () =>
-				expect( onChangeSpy ).toHaveBeenCalledTimes( 1 )
-			);
-
+			expect( onChangeSpy ).toHaveBeenCalledTimes( 1 );
 			expect( onChangeSpy ).toHaveBeenLastCalledWith( '41vh' );
 
 			expect( onUnitChangeSpy ).toHaveBeenCalledTimes( 1 );
@@ -340,17 +342,55 @@ describe( 'UnitControl', () => {
 				expect.anything()
 			);
 		} );
+
+		it( 'should update value correctly when typed and blurred when a single unit is passed', async () => {
+			const user = userEvent.setup( {
+				advanceTimers: jest.advanceTimersByTime,
+			} );
+
+			const onChangeSpy = jest.fn();
+			render(
+				<>
+					<button>Click me</button>
+					<UnitControl
+						units={ [ { value: '%', label: '%' } ] }
+						onChange={ onChangeSpy }
+					/>
+				</>
+			);
+
+			const input = getInput();
+			await user.type( input, '62' );
+
+			expect( onChangeSpy ).toHaveBeenLastCalledWith(
+				'62%',
+				expect.anything()
+			);
+
+			// Start counting again calls to `onChangeSpy`.
+			onChangeSpy.mockClear();
+
+			// Clicking on the button should cause the `onBlur` callback to fire.
+			const button = screen.getByRole( 'button' );
+			await user.click( button );
+
+			expect( onChangeSpy ).not.toHaveBeenCalled();
+		} );
 	} );
 
 	describe( 'Unit', () => {
 		it( 'should update unit value on change', async () => {
+			const user = userEvent.setup( {
+				advanceTimers: jest.advanceTimersByTime,
+			} );
+
 			let state: string | undefined = '14rem';
 			const setState: UnitControlOnChangeCallback = ( nextState ) =>
 				( state = nextState );
 
 			const spy = jest.fn();
 
-			const { user } = render(
+			render(
 				<UnitControl
 					value={ state }
 					onChange={ setState }
@@ -384,6 +424,10 @@ describe( 'UnitControl', () => {
 		} );
 
 		it( 'should reset value on unit change, if unit has default value', async () => {
+			const user = userEvent.setup( {
+				advanceTimers: jest.advanceTimersByTime,
+			} );
+
 			let state: string | number | undefined = 50;
 			const setState: UnitControlOnChangeCallback = ( nextState ) =>
 				( state = nextState );
@@ -393,7 +437,7 @@ describe( 'UnitControl', () => {
 				{ value: 'vmax', label: 'vmax', default: 75 },
 			];
 
-			const { user } = render(
+			render(
 				<UnitControl
 					isResetValueOnUnitChange
 					units={ units }
@@ -413,6 +457,10 @@ describe( 'UnitControl', () => {
 		} );
 
 		it( 'should not reset value on unit change, if disabled', async () => {
+			const user = userEvent.setup( {
+				advanceTimers: jest.advanceTimersByTime,
+			} );
+
 			let state: string | number | undefined = 50;
 			const setState: UnitControlOnChangeCallback = ( nextState ) =>
 				( state = nextState );
@@ -422,7 +470,7 @@ describe( 'UnitControl', () => {
 				{ value: 'vmax', label: 'vmax', default: 75 },
 			];
 
-			const { user } = render(
+			render(
 				<UnitControl
 					isResetValueOnUnitChange={ false }
 					value={ state }
@@ -442,11 +490,15 @@ describe( 'UnitControl', () => {
 		} );
 
 		it( 'should set correct unit if single units', async () => {
+			const user = userEvent.setup( {
+				advanceTimers: jest.advanceTimersByTime,
+			} );
+
 			let state: string | undefined = '50%';
 			const setState: UnitControlOnChangeCallback = ( value ) =>
 				( state = value );
 
-			const { user } = render(
+			render(
 				<UnitControl
 					value={ state }
 					units={ [ { value: '%', label: '%' } ] }
@@ -458,11 +510,15 @@ describe( 'UnitControl', () => {
 			await user.clear( input );
 			await user.type( input, '62' );
 
-			await waitFor( () => expect( state ).toBe( '62%' ) );
+			expect( state ).toBe( '62%' );
 		} );
 
 		it( 'should update unit value when a new raw value is passed', async () => {
-			const { user } = render( <ControlledSyncUnits /> );
+			const user = userEvent.setup( {
+				advanceTimers: jest.advanceTimersByTime,
+			} );
+
+			render( <ControlledSyncUnits /> );
 
 			const [ inputA, inputB ] = screen.getAllByRole( 'spinbutton' );
 			const [ selectA, selectB ] = screen.getAllByRole( 'combobox' );
@@ -480,24 +536,26 @@ describe( 'UnitControl', () => {
 
 			await user.selectOptions( selectA, remOptionA );
 
-			await waitFor( () => expect( selectB ).toHaveValue( 'rem' ) );
+			expect( selectB ).toHaveValue( 'rem' );
 			expect( selectA ).toHaveValue( 'rem' );
 
 			await user.selectOptions( selectB, vwOptionB );
 
-			await waitFor( () => expect( selectA ).toHaveValue( 'vw' ) );
+			expect( selectA ).toHaveValue( 'vw' );
 			expect( selectB ).toHaveValue( 'vw' );
 		} );
 
 		it( 'should maintain the chosen non-default unit when value is cleared', async () => {
+			const user = userEvent.setup( {
+				advanceTimers: jest.advanceTimersByTime,
+			} );
+
 			const units = [
 				{ value: 'pt', label: 'pt' },
 				{ value: 'vmax', label: 'vmax' },
 			];
 
-			const { user } = render(
-				<UnitControl units={ units } value="5" />
-			);
+			render( <UnitControl units={ units } value="5" /> );
 
 			const select = getSelect();
 			await user.selectOptions( select, [ 'vmax' ] );
@@ -509,47 +567,47 @@ describe( 'UnitControl', () => {
 		} );
 
 		it( 'should run onBlur callback when the unit select is blurred', async () => {
+			const user = userEvent.setup( {
+				advanceTimers: jest.advanceTimersByTime,
+			} );
+
 			const onUnitChangeSpy = jest.fn();
 			const onBlurSpy = jest.fn();
 
-			const { user } = render(
-				<>
-					<button>Click me</button>
-					<UnitControl
-						value="15px"
-						onUnitChange={ onUnitChangeSpy }
-						onBlur={ onBlurSpy }
-					/>
-				</>
+			render(
+				<UnitControl
+					value="15px"
+					onUnitChange={ onUnitChangeSpy }
+					onBlur={ onBlurSpy }
+				/>
 			);
 
 			const select = getSelect();
 			await user.selectOptions( select, [ 'em' ] );
 
-			await waitFor( () =>
-				expect( onUnitChangeSpy ).toHaveBeenCalledTimes( 1 )
-			);
+			expect( onUnitChangeSpy ).toHaveBeenCalledTimes( 1 );
 			expect( onUnitChangeSpy ).toHaveBeenLastCalledWith(
 				'em',
 				expect.anything()
 			);
 
-			// Clicking on the button should cause the `onBlur` callback to fire.
-			const button = screen.getByRole( 'button' );
-			await user.click( button );
+			// Clicking document.body to trigger a blur event on the input.
+			await user.click( document.body );
 
-			await waitFor( () =>
-				expect( onBlurSpy ).toHaveBeenCalledTimes( 1 )
-			);
+			expect( onBlurSpy ).toHaveBeenCalledTimes( 1 );
 		} );
 	} );
 
 	describe( 'Unit Parser', () => {
-		let state = '10px';
-		const setState = jest.fn( ( nextState ) => ( state = nextState ) );
-
 		it( 'should parse unit from input', async () => {
-			const { user } = render(
+			const user = userEvent.setup( {
+				advanceTimers: jest.advanceTimersByTime,
+			} );
+
+			let state = '10px';
+			const setState = jest.fn( ( nextState ) => ( state = nextState ) );
+
+			render(
 				<UnitControl
 					value={ state }
 					onChange={ setState }
@@ -561,13 +619,20 @@ describe( 'UnitControl', () => {
 			const input = getInput( { isInputTypeText: true } );
 			await user.clear( input );
 			await user.type( input, '55 em' );
-			user.keyboard( '{Enter}' );
+			await user.keyboard( '{Enter}' );
 
 			expect( state ).toBe( '55em' );
 		} );
 
 		it( 'should parse PX unit from input', async () => {
-			const { user } = render(
+			const user = userEvent.setup( {
+				advanceTimers: jest.advanceTimersByTime,
+			} );
+
+			let state = '10px';
+			const setState = jest.fn( ( nextState ) => ( state = nextState ) );
+
+			render(
 				<UnitControl
 					value={ state }
 					onChange={ setState }
@@ -579,13 +644,20 @@ describe( 'UnitControl', () => {
 			const input = getInput( { isInputTypeText: true } );
 			await user.clear( input );
 			await user.type( input, '61   PX' );
-			user.keyboard( '{Enter}' );
+			await user.keyboard( '{Enter}' );
 
 			expect( state ).toBe( '61px' );
 		} );
 
 		it( 'should parse EM unit from input', async () => {
-			const { user } = render(
+			const user = userEvent.setup( {
+				advanceTimers: jest.advanceTimersByTime,
+			} );
+
+			let state = '10px';
+			const setState = jest.fn( ( nextState ) => ( state = nextState ) );
+
+			render(
 				<UnitControl
 					value={ state }
 					onChange={ setState }
@@ -597,13 +669,20 @@ describe( 'UnitControl', () => {
 			const input = getInput( { isInputTypeText: true } );
 			await user.clear( input );
 			await user.type( input, '55 em' );
-			user.keyboard( '{Enter}' );
+			await user.keyboard( '{Enter}' );
 
 			expect( state ).toBe( '55em' );
 		} );
 
 		it( 'should parse % unit from input', async () => {
-			const { user } = render(
+			const user = userEvent.setup( {
+				advanceTimers: jest.advanceTimersByTime,
+			} );
+
+			let state = '10px';
+			const setState = jest.fn( ( nextState ) => ( state = nextState ) );
+
+			render(
 				<UnitControl
 					value={ state }
 					onChange={ setState }
@@ -615,13 +694,20 @@ describe( 'UnitControl', () => {
 			const input = getInput( { isInputTypeText: true } );
 			await user.clear( input );
 			await user.type( input, '-10  %' );
-			user.keyboard( '{Enter}' );
+			await user.keyboard( '{Enter}' );
 
 			expect( state ).toBe( '-10%' );
 		} );
 
 		it( 'should parse REM unit from input', async () => {
-			const { user } = render(
+			const user = userEvent.setup( {
+				advanceTimers: jest.advanceTimersByTime,
+			} );
+
+			let state = '10px';
+			const setState = jest.fn( ( nextState ) => ( state = nextState ) );
+
+			render(
 				<UnitControl
 					value={ state }
 					onChange={ setState }
@@ -633,7 +719,7 @@ describe( 'UnitControl', () => {
 			const input = getInput( { isInputTypeText: true } );
 			await user.clear( input );
 			await user.type( input, '123       rEm  ' );
-			user.keyboard( '{Enter}' );
+			await user.keyboard( '{Enter}' );
 
 			expect( state ).toBe( '123rem' );
 		} );
@@ -647,7 +733,7 @@ describe( 'UnitControl', () => {
 
 			rerender( <UnitControl value={ '20vh' } /> );
 
-			await waitFor( () => expect( select.value ).toBe( 'vh' ) );
+			expect( select.value ).toBe( 'vh' );
 		} );
 
 		it( 'should fallback to default unit if parsed unit is invalid', () => {
@@ -668,7 +754,7 @@ describe( 'UnitControl', () => {
 			);
 
 			const select = getSelect();
-			const options = select.querySelectorAll( 'option' );
+			const options = getSelectOptions();
 
 			expect( select.value ).toBe( '%' );
 			expect( options.length ).toBe( 3 );
