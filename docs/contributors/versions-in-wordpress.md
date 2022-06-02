@@ -6,7 +6,7 @@ If anything looks incorrect here, please bring it up in #core-editor in [WordPre
 
 | Gutenberg Versions | WordPress Version |
 | ------------------ | ----------------- |
-| 12.0-13.0          | 6.0               |
+| [12.0-13.0](https://github.com/WordPress/gutenberg/tree/wp/6.0)          | 6.0               |
 | 10.8-11.9          | 5.9.3             |
 | 10.8-11.9          | 5.9.2             |
 | 10.8-11.9          | 5.9.1             |
