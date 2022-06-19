@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+### Bug Fix
+
+-   `ColorPicker`: Remove horizontal scrollbar when using HSL or RGB color input types. ([#41646](https://github.com/WordPress/gutenberg/pull/41646))
+
+### Internal
+
+-   `Spinner`: Convert to TypeScript and update storybook ([#41540](https://github.com/WordPress/gutenberg/pull/41540/)).
+-   `InputControl`: Add tests and update to use `@testing-library/user-event` ([#41421](https://github.com/WordPress/gutenberg/pull/41421)).
+
 ## 19.13.0 (2022-06-15)
 
 ### Bug Fix

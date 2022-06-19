@@ -90,6 +90,7 @@ module.exports = {
 							'isArray',
 							'isFinite',
 							'isFunction',
+							'isNumber',
 							'isObjectLike',
 							'isUndefined',
 							'keys',
@@ -103,6 +104,7 @@ module.exports = {
 							'sum',
 							'sumBy',
 							'take',
+							'toString',
 							'trim',
 						],
 						message:
