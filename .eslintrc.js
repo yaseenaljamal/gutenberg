@@ -79,6 +79,7 @@ module.exports = {
 					{
 						name: 'lodash',
 						importNames: [
+							'chunk',
 							'clamp',
 							'concat',
 							'defaultTo',
@@ -90,6 +91,7 @@ module.exports = {
 							'isArray',
 							'isFinite',
 							'isFunction',
+							'isNil',
 							'isNumber',
 							'isObjectLike',
 							'isUndefined',
