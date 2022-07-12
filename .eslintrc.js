@@ -102,6 +102,7 @@ module.exports = {
 							'isFunction',
 							'isNil',
 							'isNumber',
+							'isObject',
 							'isObjectLike',
 							'isString',
 							'isUndefined',
@@ -343,6 +344,12 @@ module.exports = {
 				// or in TypeScript files where params are likely already documented outside of the JSDoc.
 				'jsdoc/require-param': 'off',
 			},
+		},
+		{
+			files: [ 'packages/components/src/**' ],
+			excludedFiles: [ 'packages/components/src/**/@(test|stories)/**' ],
+			plugins: [ 'ssr-friendly' ],
+			extends: [ 'plugin:ssr-friendly/recommended' ],
 		},
 	],
 };
