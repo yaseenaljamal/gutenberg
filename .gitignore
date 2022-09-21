@@ -32,4 +32,5 @@ phpcs.xml
 phpunit.xml
 phpunit-watcher.yml
 .tool-versions
-gutenberg.tmp.php
+test/storybook-playwright/test-results
+test/storybook-playwright/specs/__snapshots__
