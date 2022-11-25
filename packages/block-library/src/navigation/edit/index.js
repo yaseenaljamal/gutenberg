@@ -393,6 +393,23 @@ function Navigation( {
 		}
 	};
 
+	const onSelectClassicMenu = async ( classicMenu ) => {
+		const navMenu = await convertClassicMenu(
+			classicMenu.id,
+			classicMenu.name,
+			'draft'
+		);
+		if ( navMenu ) {
+			handleUpdateMenu( navMenu.id, {
+				focusNavigationBlock: true,
+			} );
+		}
+	};
+
+	const onSelectNavigationMenu = ( menuId ) => {
+		handleUpdateMenu( menuId );
+	};
+
 	useEffect( () => {
 		hideClassicMenuConversionNotice();
 		if ( classicMenuConversionStatus === CLASSIC_MENU_CONVERSION_PENDING ) {
@@ -667,18 +684,17 @@ function Navigation( {
 		return (
 			<TagName { ...blockProps }>
 				<MenuInspectorControls
-					clientId={ clientId }
-					convertClassicMenu={ convertClassicMenu }
 					createNavigationMenuIsSuccess={
 						createNavigationMenuIsSuccess
 					}
 					createNavigationMenuIsError={ createNavigationMenuIsError }
 					currentMenuId={ ref }
-					handleUpdateMenu={ handleUpdateMenu }
 					isNavigationMenuMissing={ isNavigationMenuMissing }
 					innerBlocks={ innerBlocks }
 					isManageMenusButtonDisabled={ isManageMenusButtonDisabled }
 					onCreateNew={ createUntitledEmptyNavigationMenu }
+					onSelectClassicMenu={ onSelectClassicMenu }
+					onSelectNavigationMenu={ onSelectNavigationMenu }
 				/>
 				{ stylingInspectorControls }
 				<ResponsiveWrapper
@@ -710,17 +726,16 @@ function Navigation( {
 		return (
 			<TagName { ...blockProps }>
 				<MenuInspectorControls
-					clientId={ clientId }
-					convertClassicMenu={ convertClassicMenu }
 					createNavigationMenuIsSuccess={
 						createNavigationMenuIsSuccess
 					}
 					createNavigationMenuIsError={ createNavigationMenuIsError }
-					handleUpdateMenu={ handleUpdateMenu }
 					isNavigationMenuMissing={ isNavigationMenuMissing }
 					innerBlocks={ innerBlocks }
 					isManageMenusButtonDisabled={ isManageMenusButtonDisabled }
 					onCreateNew={ createUntitledEmptyNavigationMenu }
+					onSelectClassicMenu={ onSelectClassicMenu }
+					onSelectNavigationMenu={ onSelectNavigationMenu }
 				/>
 				<Warning>
 					{ __(
@@ -772,21 +787,8 @@ function Navigation( {
 					isResolvingCanUserCreateNavigationMenu={
 						isResolvingCanUserCreateNavigationMenu
 					}
-					onSelectNavigationMenu={ ( menuId ) => {
-						handleUpdateMenu( menuId );
-					} }
-					onSelectClassicMenu={ async ( classicMenu ) => {
-						const navMenu = await convertClassicMenu(
-							classicMenu.id,
-							classicMenu.name,
-							'draft'
-						);
-						if ( navMenu ) {
-							handleUpdateMenu( navMenu.id, {
-								focusNavigationBlock: true,
-							} );
-						}
-					} }
+					onSelectNavigationMenu={ onSelectNavigationMenu }
+					onSelectClassicMenu={ onSelectClassicMenu }
 					onCreateEmpty={ createUntitledEmptyNavigationMenu }
 				/>
 			</TagName>
@@ -797,18 +799,17 @@ function Navigation( {
 		<EntityProvider kind="postType" type="wp_navigation" id={ ref }>
 			<RecursionProvider uniqueId={ recursionId }>
 				<MenuInspectorControls
-					clientId={ clientId }
-					convertClassicMenu={ convertClassicMenu }
 					createNavigationMenuIsSuccess={
 						createNavigationMenuIsSuccess
 					}
 					createNavigationMenuIsError={ createNavigationMenuIsError }
 					currentMenuId={ ref }
-					handleUpdateMenu={ handleUpdateMenu }
 					isNavigationMenuMissing={ isNavigationMenuMissing }
 					innerBlocks={ innerBlocks }
 					isManageMenusButtonDisabled={ isManageMenusButtonDisabled }
 					onCreateNew={ createUntitledEmptyNavigationMenu }
+					onSelectClassicMenu={ onSelectClassicMenu }
+					onSelectNavigationMenu={ onSelectNavigationMenu }
 				/>
 				{ stylingInspectorControls }
 				{ isEntityAvailable && (
