@@ -101,6 +101,7 @@ module.exports = {
 							'escapeRegExp',
 							'every',
 							'extend',
+							'filter',
 							'findIndex',
 							'findKey',
 							'findLast',
@@ -368,7 +369,6 @@ module.exports = {
 				'plugin:testing-library/react',
 			],
 			rules: {
-				'testing-library/no-container': 'off',
 				'testing-library/no-node-access': 'off',
 			},
 		},
