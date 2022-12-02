@@ -13,9 +13,15 @@ describe( 'performance', () => {
 			innerBlocks: [],
 		} );
 	}
-	const preparedState = reducer( state, {
-		type: 'RESET_BLOCKS',
-		blocks,
+
+	let preparedState;
+
+	it( 'should reset blocks', () => {
+		preparedState = reducer( state, {
+			type: 'RESET_BLOCKS',
+			blocks,
+		} );
+		expect( preparedState ).toBeDefined();
 	} );
 
 	it( 'should update blocks', () => {
@@ -48,6 +54,16 @@ describe( 'performance', () => {
 			],
 			indexToSelect: 10,
 			initialPosition: 0,
+		} );
+
+		expect( updatedState ).toBeDefined();
+	} );
+
+	it( 'should move blocks', () => {
+		const updatedState = reducer( preparedState, {
+			type: 'MOVE_BLOCKS_DOWN',
+			clientIds: [ 'block-10' ],
+			rootClientId: '',
 		} );
 
 		expect( updatedState ).toBeDefined();

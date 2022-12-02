@@ -134,7 +134,7 @@ export function getBlock( state, clientId ) {
 		return null;
 	}
 
-	return state.blocks.tree[ clientId ];
+	return state.blocks.tree.get( clientId );
 }
 
 export const __unstableGetBlockWithoutInnerBlocks = createSelector(
@@ -169,7 +169,7 @@ export function getBlocks( state, rootClientId ) {
 		! rootClientId || ! areInnerBlocksControlled( state, rootClientId )
 			? rootClientId || ''
 			: 'controlled||' + rootClientId;
-	return state.blocks.tree[ treeKey ]?.innerBlocks || EMPTY_ARRAY;
+	return state.blocks.tree.get( treeKey )?.innerBlocks || EMPTY_ARRAY;
 }
 
 /**
@@ -320,7 +320,7 @@ export const getBlocksByClientId = createSelector(
 	( state, clientIds ) =>
 		map(
 			Array.isArray( clientIds ) ? clientIds : [ clientIds ],
-			( clientId ) => state.blocks.tree[ clientId ]
+			( clientId ) => state.blocks.tree.get( clientId )
 		)
 );
 
@@ -461,8 +461,8 @@ export function getSelectedBlock( state ) {
  * @return {?string} Root client ID, if exists
  */
 export function getBlockRootClientId( state, clientId ) {
-	return state.blocks.parents[ clientId ] !== undefined
-		? state.blocks.parents[ clientId ]
+	return state.blocks.parents.has( clientId )
+		? state.blocks.parents.get( clientId )
 		: null;
 }
 
@@ -479,8 +479,8 @@ export const getBlockParents = createSelector(
 	( state, clientId, ascending = false ) => {
 		const parents = [];
 		let current = clientId;
-		while ( !! state.blocks.parents[ current ] ) {
-			current = state.blocks.parents[ current ];
+		while ( !! state.blocks.parents.get( current ) ) {
+			current = state.blocks.parents.get( current );
 			parents.push( current );
 		}
 
@@ -534,7 +534,7 @@ export function getBlockHierarchyRootClientId( state, clientId ) {
 	let parent;
 	do {
 		parent = current;
-		current = state.blocks.parents[ current ];
+		current = state.blocks.parents.get( current );
 	} while ( current );
 	return parent;
 }
@@ -611,7 +611,7 @@ export function getAdjacentBlockClientId( state, startClientId, modifier = 1 ) {
 	}
 
 	const { order } = state.blocks;
-	const orderSet = order[ rootClientId ];
+	const orderSet = order.get( rootClientId );
 	const index = orderSet.indexOf( startClientId );
 	const nextIndex = index + 1 * modifier;
 
@@ -1126,7 +1126,7 @@ export const __unstableGetSelectedBlocksWithPartialSelection = ( state ) => {
  * @return {Array} Ordered client IDs of editor blocks.
  */
 export function getBlockOrder( state, rootClientId ) {
-	return state.blocks.order[ rootClientId || '' ] || EMPTY_ARRAY;
+	return state.blocks.order.get( rootClientId || '' ) || EMPTY_ARRAY;
 }
 
 /**
@@ -2208,7 +2208,7 @@ export const __experimentalGetDirectInsertBlock = createSelector(
 	},
 	( state, rootClientId ) => [
 		state.blockListSettings[ rootClientId ],
-		state.blocks.tree[ rootClientId ],
+		state.blocks.tree.get( rootClientId ),
 	]
 );
 

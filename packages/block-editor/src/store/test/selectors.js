@@ -204,8 +204,8 @@ describe( 'selectors', () => {
 				blocks: {
 					byClientId: new Map(),
 					attributes: {},
-					order: {},
-					parents: {},
+					order: new Map(),
+					parents: new Map(),
 				},
 			};
 
@@ -234,13 +234,17 @@ describe( 'selectors', () => {
 							'afd1cb17-2c08-4e7a-91be-007ba7ddc3a1': {},
 						} )
 					),
-					order: {
-						'': [ 'afd1cb17-2c08-4e7a-91be-007ba7ddc3a1' ],
-						'afd1cb17-2c08-4e7a-91be-007ba7ddc3a1': [],
-					},
-					parents: {
-						'afd1cb17-2c08-4e7a-91be-007ba7ddc3a1': '',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ 'afd1cb17-2c08-4e7a-91be-007ba7ddc3a1' ],
+							'afd1cb17-2c08-4e7a-91be-007ba7ddc3a1': [],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							'afd1cb17-2c08-4e7a-91be-007ba7ddc3a1': '',
+						} )
+					),
 				},
 			};
 
@@ -267,26 +271,34 @@ describe( 'selectors', () => {
 							123: {},
 						} )
 					),
-					order: {
-						'': [ '123' ],
-						123: [],
-					},
-					parents: {
-						123: '',
-					},
-					tree: {
-						123: {
-							clientId: '123',
-							name: 'core/paragraph',
-							attributes: {},
-							innerBlocks: [],
-						},
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '123' ],
+							123: [],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							123: '',
+						} )
+					),
+					tree: new Map(
+						Object.entries( {
+							123: {
+								clientId: '123',
+								name: 'core/paragraph',
+								attributes: {},
+								innerBlocks: [],
+							},
+						} )
+					),
 					controlledInnerBlocks: {},
 				},
 			};
 
-			expect( getBlock( state, '123' ) ).toBe( state.blocks.tree[ 123 ] );
+			expect( getBlock( state, '123' ) ).toBe(
+				state.blocks.tree.get( '123' )
+			);
 		} );
 
 		it( 'should return null if the block is not present in state', () => {
@@ -294,16 +306,18 @@ describe( 'selectors', () => {
 				blocks: {
 					byClientId: new Map(),
 					attributes: new Map(),
-					order: {},
-					parents: {},
-					tree: {
-						123: {
-							clientId: '123',
-							name: 'core/paragraph',
-							attributes: {},
-							innerBlocks: [],
-						},
-					},
+					order: new Map(),
+					parents: new Map(),
+					tree: new Map(
+						Object.entries( {
+							123: {
+								clientId: '123',
+								name: 'core/paragraph',
+								attributes: {},
+								innerBlocks: [],
+							},
+						} )
+					),
 					controlledInnerBlocks: {},
 				},
 			};
@@ -328,39 +342,45 @@ describe( 'selectors', () => {
 							123: {},
 						} )
 					),
-					order: {
-						'': [ '123', '23' ],
-					},
-					parents: {
-						123: '',
-						23: '',
-					},
-					tree: {
-						'': {
-							innerBlocks: [
-								{
-									clientId: '123',
-									name: 'core/paragraph',
-									attributes: {},
-									innerBlocks: [],
-								},
-								{
-									clientId: '23',
-									name: 'core/heading',
-									attributes: {},
-									innerBlocks: [],
-								},
-							],
-						},
-						123: {},
-						23: {},
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '123', '23' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							123: '',
+							23: '',
+						} )
+					),
+					tree: new Map(
+						Object.entries( {
+							'': {
+								innerBlocks: [
+									{
+										clientId: '123',
+										name: 'core/paragraph',
+										attributes: {},
+										innerBlocks: [],
+									},
+									{
+										clientId: '23',
+										name: 'core/heading',
+										attributes: {},
+										innerBlocks: [],
+									},
+								],
+							},
+							123: {},
+							23: {},
+						} )
+					),
 					controlledInnerBlocks: {},
 				},
 			};
 
 			expect( getBlocks( state ) ).toBe(
-				state.blocks.tree[ '' ].innerBlocks
+				state.blocks.tree.get( '' ).innerBlocks
 			);
 		} );
 	} );
@@ -369,12 +389,14 @@ describe( 'selectors', () => {
 		it( 'should return parent blocks', () => {
 			const state = {
 				blocks: {
-					parents: {
-						'client-id-01': '',
-						'client-id-02': 'client-id-01',
-						'client-id-03': 'client-id-02',
-						'client-id-04': 'client-id-03',
-					},
+					parents: new Map(
+						Object.entries( {
+							'client-id-01': '',
+							'client-id-02': 'client-id-01',
+							'client-id-03': 'client-id-02',
+							'client-id-04': 'client-id-03',
+						} )
+					),
 					byClientId: new Map(
 						Object.entries( {
 							'client-id-01': {
@@ -418,13 +440,15 @@ describe( 'selectors', () => {
 	describe( 'getBlockParentsByBlockName', () => {
 		const state = {
 			blocks: {
-				parents: {
-					'client-id-01': '',
-					'client-id-02': 'client-id-01',
-					'client-id-03': 'client-id-02',
-					'client-id-04': 'client-id-03',
-					'client-id-05': 'client-id-04',
-				},
+				parents: new Map(
+					Object.entries( {
+						'client-id-01': '',
+						'client-id-02': 'client-id-01',
+						'client-id-03': 'client-id-02',
+						'client-id-04': 'client-id-03',
+						'client-id-05': 'client-id-04',
+					} )
+				),
 				byClientId: new Map(
 					Object.entries( {
 						'client-id-01': {
@@ -587,37 +611,41 @@ describe( 'selectors', () => {
 							'uuid-30': {},
 						} )
 					),
-					order: {
-						'': [ 'uuid-6', 'uuid-8', 'uuid-10', 'uuid-22' ],
-						'uuid-2': [],
-						'uuid-4': [],
-						'uuid-6': [],
-						'uuid-8': [],
-						'uuid-10': [ 'uuid-12', 'uuid-14' ],
-						'uuid-12': [ 'uuid-16' ],
-						'uuid-14': [ 'uuid-18' ],
-						'uuid-16': [],
-						'uuid-18': [ 'uuid-24' ],
-						'uuid-20': [],
-						'uuid-22': [],
-						'uuid-24': [ 'uuid-26', 'uuid-28' ],
-						'uuid-26': [],
-						'uuid-28': [ 'uuid-30' ],
-					},
-					parents: {
-						'uuid-6': '',
-						'uuid-8': '',
-						'uuid-10': '',
-						'uuid-22': '',
-						'uuid-12': 'uuid-10',
-						'uuid-14': 'uuid-10',
-						'uuid-16': 'uuid-12',
-						'uuid-18': 'uuid-14',
-						'uuid-24': 'uuid-18',
-						'uuid-26': 'uuid-24',
-						'uuid-28': 'uuid-24',
-						'uuid-30': 'uuid-28',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ 'uuid-6', 'uuid-8', 'uuid-10', 'uuid-22' ],
+							'uuid-2': [],
+							'uuid-4': [],
+							'uuid-6': [],
+							'uuid-8': [],
+							'uuid-10': [ 'uuid-12', 'uuid-14' ],
+							'uuid-12': [ 'uuid-16' ],
+							'uuid-14': [ 'uuid-18' ],
+							'uuid-16': [],
+							'uuid-18': [ 'uuid-24' ],
+							'uuid-20': [],
+							'uuid-22': [],
+							'uuid-24': [ 'uuid-26', 'uuid-28' ],
+							'uuid-26': [],
+							'uuid-28': [ 'uuid-30' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							'uuid-6': '',
+							'uuid-8': '',
+							'uuid-10': '',
+							'uuid-22': '',
+							'uuid-12': 'uuid-10',
+							'uuid-14': 'uuid-10',
+							'uuid-16': 'uuid-12',
+							'uuid-18': 'uuid-14',
+							'uuid-24': 'uuid-18',
+							'uuid-26': 'uuid-24',
+							'uuid-28': 'uuid-24',
+							'uuid-30': 'uuid-28',
+						} )
+					),
 					controlledInnerBlocks: {},
 				},
 			};
@@ -723,37 +751,41 @@ describe( 'selectors', () => {
 							'uuid-30': {},
 						} )
 					),
-					order: {
-						'': [ 'uuid-6', 'uuid-8', 'uuid-10', 'uuid-22' ],
-						'uuid-2': [],
-						'uuid-4': [],
-						'uuid-6': [],
-						'uuid-8': [],
-						'uuid-10': [ 'uuid-12', 'uuid-14' ],
-						'uuid-12': [ 'uuid-16' ],
-						'uuid-14': [ 'uuid-18' ],
-						'uuid-16': [],
-						'uuid-18': [ 'uuid-24' ],
-						'uuid-20': [],
-						'uuid-22': [],
-						'uuid-24': [ 'uuid-26', 'uuid-28' ],
-						'uuid-26': [],
-						'uuid-28': [ 'uuid-30' ],
-					},
-					parents: {
-						'uuid-6': '',
-						'uuid-8': '',
-						'uuid-10': '',
-						'uuid-22': '',
-						'uuid-12': 'uuid-10',
-						'uuid-14': 'uuid-10',
-						'uuid-16': 'uuid-12',
-						'uuid-18': 'uuid-14',
-						'uuid-24': 'uuid-18',
-						'uuid-26': 'uuid-24',
-						'uuid-28': 'uuid-24',
-						'uuid-30': 'uuid-28',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ 'uuid-6', 'uuid-8', 'uuid-10', 'uuid-22' ],
+							'uuid-2': [],
+							'uuid-4': [],
+							'uuid-6': [],
+							'uuid-8': [],
+							'uuid-10': [ 'uuid-12', 'uuid-14' ],
+							'uuid-12': [ 'uuid-16' ],
+							'uuid-14': [ 'uuid-18' ],
+							'uuid-16': [],
+							'uuid-18': [ 'uuid-24' ],
+							'uuid-20': [],
+							'uuid-22': [],
+							'uuid-24': [ 'uuid-26', 'uuid-28' ],
+							'uuid-26': [],
+							'uuid-28': [ 'uuid-30' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							'uuid-6': '',
+							'uuid-8': '',
+							'uuid-10': '',
+							'uuid-22': '',
+							'uuid-12': 'uuid-10',
+							'uuid-14': 'uuid-10',
+							'uuid-16': 'uuid-12',
+							'uuid-18': 'uuid-14',
+							'uuid-24': 'uuid-18',
+							'uuid-26': 'uuid-24',
+							'uuid-28': 'uuid-24',
+							'uuid-30': 'uuid-28',
+						} )
+					),
 				},
 			};
 			expect( getClientIdsWithDescendants( state ) ).toEqual( [
@@ -789,9 +821,11 @@ describe( 'selectors', () => {
 							123: {},
 						} )
 					),
-					order: {
-						'': [ '123', '23' ],
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '123', '23' ],
+						} )
+					),
 				},
 			};
 
@@ -815,15 +849,19 @@ describe( 'selectors', () => {
 							789: {},
 						} )
 					),
-					order: {
-						'': [ '123' ],
-						123: [ '456', '789' ],
-					},
-					parents: {
-						123: '',
-						456: '123',
-						789: '123',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '123' ],
+							123: [ '456', '789' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							123: '',
+							456: '123',
+							789: '123',
+						} )
+					),
 				},
 			};
 
@@ -891,13 +929,17 @@ describe( 'selectors', () => {
 						789: {},
 					} )
 				),
-				order: {
-					'': [ '123', '456' ],
-				},
-				parents: {
-					123: '',
-					456: '',
-				},
+				order: new Map(
+					Object.entries( {
+						'': [ '123', '456' ],
+					} )
+				),
+				parents: new Map(
+					Object.entries( {
+						123: '',
+						456: '',
+					} )
+				),
 			},
 		};
 
@@ -914,8 +956,8 @@ describe( 'selectors', () => {
 				blocks: {
 					byClientId: new Map(),
 					attributes: new Map(),
-					order: {},
-					parents: {},
+					order: new Map(),
+					parents: new Map(),
 				},
 			};
 			expect( getGlobalBlockCount( emptyState ) ).toBe( 0 );
@@ -948,17 +990,21 @@ describe( 'selectors', () => {
 						1415: {},
 					} )
 				),
-				order: {
-					'': [ '123', '456', '1011' ],
-					1011: [ '1415', '1213' ],
-				},
-				parents: {
-					123: '',
-					456: '',
-					1011: '',
-					1213: '1011',
-					1415: '1011',
-				},
+				order: new Map(
+					Object.entries( {
+						'': [ '123', '456', '1011' ],
+						1011: [ '1415', '1213' ],
+					} )
+				),
+				parents: new Map(
+					Object.entries( {
+						123: '',
+						456: '',
+						1011: '',
+						1213: '1011',
+						1415: '1011',
+					} )
+				),
 			},
 		};
 
@@ -1051,23 +1097,29 @@ describe( 'selectors', () => {
 							123: {},
 						} )
 					),
-					order: {
-						'': [ '23', '123' ],
-						23: [],
-						123: [],
-					},
-					parents: {
-						23: '',
-						123: '',
-					},
-					tree: {
-						23: {
-							clientId: '23',
-							name: 'core/heading',
-							attributes: {},
-							innerBlocks: [],
-						},
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '23', '123' ],
+							23: [],
+							123: [],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							23: '',
+							123: '',
+						} )
+					),
+					tree: new Map(
+						Object.entries( {
+							23: {
+								clientId: '23',
+								name: 'core/heading',
+								attributes: {},
+								innerBlocks: [],
+							},
+						} )
+					),
 				},
 				selection: {
 					selectionStart: {},
@@ -1093,23 +1145,29 @@ describe( 'selectors', () => {
 							123: {},
 						} )
 					),
-					order: {
-						'': [ '23', '123' ],
-						23: [],
-						123: [],
-					},
-					parents: {
-						123: '',
-						23: '',
-					},
-					tree: {
-						23: {
-							clientId: '23',
-							name: 'core/heading',
-							attributes: {},
-							innerBlocks: [],
-						},
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '23', '123' ],
+							23: [],
+							123: [],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							123: '',
+							23: '',
+						} )
+					),
+					tree: new Map(
+						Object.entries( {
+							23: {
+								clientId: '23',
+								name: 'core/heading',
+								attributes: {},
+								innerBlocks: [],
+							},
+						} )
+					),
 				},
 				selection: {
 					selectionStart: { clientId: '23' },
@@ -1135,23 +1193,29 @@ describe( 'selectors', () => {
 							123: {},
 						} )
 					),
-					order: {
-						'': [ '23', '123' ],
-						23: [],
-						123: [],
-					},
-					parents: {
-						123: '',
-						23: '',
-					},
-					tree: {
-						23: {
-							clientId: '23',
-							name: 'core/heading',
-							attributes: {},
-							innerBlocks: [],
-						},
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '23', '123' ],
+							23: [],
+							123: [],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							123: '',
+							23: '',
+						} )
+					),
+					tree: new Map(
+						Object.entries( {
+							23: {
+								clientId: '23',
+								name: 'core/heading',
+								attributes: {},
+								innerBlocks: [],
+							},
+						} )
+					),
 					controlledInnerBlocks: {},
 				},
 				selection: {
@@ -1170,8 +1234,8 @@ describe( 'selectors', () => {
 		it( 'should return null if the block does not exist', () => {
 			const state = {
 				blocks: {
-					order: {},
-					parents: {},
+					order: new Map(),
+					parents: new Map(),
 				},
 			};
 
@@ -1181,16 +1245,20 @@ describe( 'selectors', () => {
 		it( 'should return root ClientId relative the block ClientId', () => {
 			const state = {
 				blocks: {
-					order: {
-						'': [ '123', '23' ],
-						123: [ '456', '56' ],
-					},
-					parents: {
-						123: '',
-						23: '',
-						456: '123',
-						56: '123',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '123', '23' ],
+							123: [ '456', '56' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							123: '',
+							23: '',
+							456: '123',
+							56: '123',
+						} )
+					),
 				},
 			};
 
@@ -1202,8 +1270,8 @@ describe( 'selectors', () => {
 		it( 'should return the given block if the block has no parents', () => {
 			const state = {
 				blocks: {
-					order: {},
-					parents: {},
+					order: new Map(),
+					parents: new Map(),
 				},
 			};
 
@@ -1213,16 +1281,20 @@ describe( 'selectors', () => {
 		it( 'should return root ClientId relative the block ClientId', () => {
 			const state = {
 				blocks: {
-					order: {
-						'': [ 'a', 'b' ],
-						a: [ 'c', 'd' ],
-					},
-					parents: {
-						a: '',
-						b: '',
-						c: 'a',
-						d: 'a',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ 'a', 'b' ],
+							a: [ 'c', 'd' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							a: '',
+							b: '',
+							c: 'a',
+							d: 'a',
+						} )
+					),
 				},
 			};
 
@@ -1232,18 +1304,22 @@ describe( 'selectors', () => {
 		it( 'should return the top level root ClientId relative the block ClientId', () => {
 			const state = {
 				blocks: {
-					order: {
-						'': [ 'a', 'b' ],
-						a: [ 'c', 'd' ],
-						d: [ 'e' ],
-					},
-					parents: {
-						a: '',
-						b: '',
-						c: 'a',
-						d: 'a',
-						e: 'd',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ 'a', 'b' ],
+							a: [ 'c', 'd' ],
+							d: [ 'e' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							a: '',
+							b: '',
+							c: 'a',
+							d: 'a',
+							e: 'd',
+						} )
+					),
 				},
 			};
 
@@ -1255,13 +1331,17 @@ describe( 'selectors', () => {
 		it( 'should return empty if there is no selection', () => {
 			const state = {
 				blocks: {
-					order: {
-						'': [ '123', '23' ],
-					},
-					parents: {
-						123: '',
-						23: '',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '123', '23' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							123: '',
+							23: '',
+						} )
+					),
 				},
 				selection: {
 					selectionStart: {},
@@ -1275,16 +1355,20 @@ describe( 'selectors', () => {
 		it( 'should return the selected block clientId if there is a selection', () => {
 			const state = {
 				blocks: {
-					order: {
-						'': [ '5', '4', '3', '2', '1' ],
-					},
-					parents: {
-						1: '',
-						2: '',
-						3: '',
-						4: '',
-						5: '',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '5', '4', '3', '2', '1' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							1: '',
+							2: '',
+							3: '',
+							4: '',
+							5: '',
+						} )
+					),
 				},
 				selection: {
 					selectionStart: { clientId: '2' },
@@ -1298,16 +1382,20 @@ describe( 'selectors', () => {
 		it( 'should return selected block clientIds if there is multi selection', () => {
 			const state = {
 				blocks: {
-					order: {
-						'': [ '5', '4', '3', '2', '1' ],
-					},
-					parents: {
-						1: '',
-						2: '',
-						3: '',
-						4: '',
-						5: '',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '5', '4', '3', '2', '1' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							1: '',
+							2: '',
+							3: '',
+							4: '',
+							5: '',
+						} )
+					),
 				},
 				selection: {
 					selectionStart: { clientId: '2' },
@@ -1325,21 +1413,25 @@ describe( 'selectors', () => {
 		it( 'should return selected block clientIds if there is multi selection (nested context)', () => {
 			const state = {
 				blocks: {
-					order: {
-						'': [ '5', '4', '3', '2', '1' ],
-						4: [ '9', '8', '7', '6' ],
-					},
-					parents: {
-						1: '',
-						2: '',
-						3: '',
-						4: '',
-						5: '',
-						6: '4',
-						7: '4',
-						8: '4',
-						9: '4',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '5', '4', '3', '2', '1' ],
+							4: [ '9', '8', '7', '6' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							1: '',
+							2: '',
+							3: '',
+							4: '',
+							5: '',
+							6: '4',
+							7: '4',
+							8: '4',
+							9: '4',
+						} )
+					),
 				},
 				selection: {
 					selectionStart: { clientId: '7' },
@@ -1359,13 +1451,17 @@ describe( 'selectors', () => {
 		it( 'should return empty if there is no multi selection', () => {
 			const state = {
 				blocks: {
-					order: {
-						'': [ '123', '23' ],
-					},
-					parents: {
-						23: '',
-						123: '',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '123', '23' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							23: '',
+							123: '',
+						} )
+					),
 				},
 				selection: {
 					selectionStart: {},
@@ -1379,16 +1475,20 @@ describe( 'selectors', () => {
 		it( 'should return selected block clientIds if there is multi selection', () => {
 			const state = {
 				blocks: {
-					order: {
-						'': [ '5', '4', '3', '2', '1' ],
-					},
-					parents: {
-						1: '',
-						2: '',
-						3: '',
-						4: '',
-						5: '',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '5', '4', '3', '2', '1' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							1: '',
+							2: '',
+							3: '',
+							4: '',
+							5: '',
+						} )
+					),
 				},
 				selection: {
 					selectionStart: { clientId: '2' },
@@ -1406,21 +1506,25 @@ describe( 'selectors', () => {
 		it( 'should return selected block clientIds if there is multi selection (nested context)', () => {
 			const state = {
 				blocks: {
-					order: {
-						'': [ '5', '4', '3', '2', '1' ],
-						4: [ '9', '8', '7', '6' ],
-					},
-					parents: {
-						1: '',
-						2: '',
-						3: '',
-						4: '',
-						5: '',
-						6: '4',
-						7: '4',
-						8: '4',
-						9: '4',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '5', '4', '3', '2', '1' ],
+							4: [ '9', '8', '7', '6' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							1: '',
+							2: '',
+							3: '',
+							4: '',
+							5: '',
+							6: '4',
+							7: '4',
+							8: '4',
+							9: '4',
+						} )
+					),
 				},
 				selection: {
 					selectionStart: { clientId: '7' },
@@ -1442,8 +1546,8 @@ describe( 'selectors', () => {
 				blocks: {
 					byClientId: new Map(),
 					attributes: new Map(),
-					order: {},
-					parents: {},
+					order: new Map(),
+					parents: new Map(),
 				},
 				selection: {
 					selectionStart: {},
@@ -1509,13 +1613,17 @@ describe( 'selectors', () => {
 		it( 'should return the ordered block ClientIds of top-level blocks by default', () => {
 			const state = {
 				blocks: {
-					order: {
-						'': [ '123', '23' ],
-					},
-					parents: {
-						23: '',
-						123: '',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '123', '23' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							23: '',
+							123: '',
+						} )
+					),
 				},
 			};
 
@@ -1525,15 +1633,19 @@ describe( 'selectors', () => {
 		it( 'should return the ordered block ClientIds at a specified rootClientId', () => {
 			const state = {
 				blocks: {
-					order: {
-						'': [ '123', '23' ],
-						123: [ '456' ],
-					},
-					parents: {
-						23: '',
-						123: '',
-						456: '123',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '123', '23' ],
+							123: [ '456' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							23: '',
+							123: '',
+							456: '123',
+						} )
+					),
 				},
 			};
 
@@ -1545,13 +1657,17 @@ describe( 'selectors', () => {
 		it( 'should return the block order', () => {
 			const state = {
 				blocks: {
-					order: {
-						'': [ '123', '23' ],
-					},
-					parents: {
-						23: '',
-						123: '',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '123', '23' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							23: '',
+							123: '',
+						} )
+					),
 				},
 			};
 
@@ -1561,16 +1677,20 @@ describe( 'selectors', () => {
 		it( 'should return the block order (nested context)', () => {
 			const state = {
 				blocks: {
-					order: {
-						'': [ '123', '23' ],
-						123: [ '456', '56' ],
-					},
-					parents: {
-						23: '',
-						123: '',
-						56: '123',
-						456: '123',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '123', '23' ],
+							123: [ '456', '56' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							23: '',
+							123: '',
+							56: '123',
+							456: '123',
+						} )
+					),
 				},
 			};
 
@@ -1582,13 +1702,17 @@ describe( 'selectors', () => {
 		it( 'should return the previous block', () => {
 			const state = {
 				blocks: {
-					order: {
-						'': [ '123', '23' ],
-					},
-					parents: {
-						23: '',
-						123: '',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '123', '23' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							23: '',
+							123: '',
+						} )
+					),
 				},
 			};
 
@@ -1598,16 +1722,20 @@ describe( 'selectors', () => {
 		it( 'should return the previous block (nested context)', () => {
 			const state = {
 				blocks: {
-					order: {
-						'': [ '123', '23' ],
-						123: [ '456', '56' ],
-					},
-					parents: {
-						23: '',
-						123: '',
-						456: '123',
-						56: '123',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '123', '23' ],
+							123: [ '456', '56' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							23: '',
+							123: '',
+							456: '123',
+							56: '123',
+						} )
+					),
 				},
 			};
 
@@ -1619,13 +1747,17 @@ describe( 'selectors', () => {
 		it( 'should return null for the first block', () => {
 			const state = {
 				blocks: {
-					order: {
-						'': [ '123', '23' ],
-					},
-					parents: {
-						23: '',
-						123: '',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '123', '23' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							23: '',
+							123: '',
+						} )
+					),
 				},
 			};
 
@@ -1635,16 +1767,20 @@ describe( 'selectors', () => {
 		it( 'should return null for the first block (nested context)', () => {
 			const state = {
 				blocks: {
-					order: {
-						'': [ '123', '23' ],
-						123: [ '456', '56' ],
-					},
-					parents: {
-						23: '',
-						123: '',
-						456: '123',
-						56: '123',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '123', '23' ],
+							123: [ '456', '56' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							23: '',
+							123: '',
+							456: '123',
+							56: '123',
+						} )
+					),
 				},
 			};
 
@@ -1658,13 +1794,17 @@ describe( 'selectors', () => {
 		it( 'should return the following block', () => {
 			const state = {
 				blocks: {
-					order: {
-						'': [ '123', '23' ],
-					},
-					parents: {
-						23: '',
-						123: '',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '123', '23' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							23: '',
+							123: '',
+						} )
+					),
 				},
 			};
 
@@ -1674,16 +1814,20 @@ describe( 'selectors', () => {
 		it( 'should return the following block (nested context)', () => {
 			const state = {
 				blocks: {
-					order: {
-						'': [ '123', '23' ],
-						123: [ '456', '56' ],
-					},
-					parents: {
-						23: '',
-						123: '',
-						456: '123',
-						56: '123',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '123', '23' ],
+							123: [ '456', '56' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							23: '',
+							123: '',
+							456: '123',
+							56: '123',
+						} )
+					),
 				},
 			};
 
@@ -1695,13 +1839,17 @@ describe( 'selectors', () => {
 		it( 'should return null for the last block', () => {
 			const state = {
 				blocks: {
-					order: {
-						'': [ '123', '23' ],
-					},
-					parents: {
-						23: '',
-						123: '',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '123', '23' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							23: '',
+							123: '',
+						} )
+					),
 				},
 			};
 
@@ -1711,16 +1859,20 @@ describe( 'selectors', () => {
 		it( 'should return null for the last block (nested context)', () => {
 			const state = {
 				blocks: {
-					order: {
-						'': [ '123', '23' ],
-						123: [ '456', '56' ],
-					},
-					parents: {
-						23: '',
-						123: '',
-						456: '123',
-						56: '123',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '123', '23' ],
+							123: [ '456', '56' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							23: '',
+							123: '',
+							456: '123',
+							56: '123',
+						} )
+					),
 				},
 			};
 
@@ -1771,14 +1923,18 @@ describe( 'selectors', () => {
 					selectionEnd: { clientId: '5' },
 				},
 				blocks: {
-					order: {
-						4: [ '3', '2', '1' ],
-					},
-					parents: {
-						1: '4',
-						2: '4',
-						3: '4',
-					},
+					order: new Map(
+						Object.entries( {
+							4: [ '3', '2', '1' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							1: '4',
+							2: '4',
+							3: '4',
+						} )
+					),
 				},
 			};
 
@@ -1792,14 +1948,18 @@ describe( 'selectors', () => {
 					selectionEnd: { clientId: '3' },
 				},
 				blocks: {
-					order: {
-						4: [ '3', '2', '1' ],
-					},
-					parents: {
-						1: '4',
-						2: '4',
-						3: '4',
-					},
+					order: new Map(
+						Object.entries( {
+							4: [ '3', '2', '1' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							1: '4',
+							2: '4',
+							3: '4',
+						} )
+					),
 				},
 			};
 
@@ -1809,16 +1969,20 @@ describe( 'selectors', () => {
 		it( 'should return true if a multi selection exists that contains children of the block with the given ClientId', () => {
 			const state = {
 				blocks: {
-					order: {
-						6: [ '5', '4', '3', '2', '1' ],
-					},
-					parents: {
-						1: '6',
-						2: '6',
-						3: '6',
-						4: '6',
-						5: '6',
-					},
+					order: new Map(
+						Object.entries( {
+							6: [ '5', '4', '3', '2', '1' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							1: '6',
+							2: '6',
+							3: '6',
+							4: '6',
+							5: '6',
+						} )
+					),
 				},
 				selection: {
 					selectionStart: { clientId: '2' },
@@ -1831,16 +1995,20 @@ describe( 'selectors', () => {
 		it( 'should return false if a multi selection exists bot does not contains children of the block with the given ClientId', () => {
 			const state = {
 				blocks: {
-					order: {
-						3: [ '2', '1' ],
-						6: [ '5', '4' ],
-					},
-					parents: {
-						1: '3',
-						2: '3',
-						4: '6',
-						5: '6',
-					},
+					order: new Map(
+						Object.entries( {
+							3: [ '2', '1' ],
+							6: [ '5', '4' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							1: '3',
+							2: '3',
+							4: '6',
+							5: '6',
+						} )
+					),
 				},
 				selection: {
 					selectionStart: { clientId: '5' },
@@ -1859,16 +2027,20 @@ describe( 'selectors', () => {
 					selectionEnd: { clientId: '3' },
 				},
 				blocks: {
-					order: {
-						'': [ '5', '4', '3', '2', '1' ],
-					},
-					parents: {
-						1: '',
-						2: '',
-						3: '',
-						4: '',
-						5: '',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '5', '4', '3', '2', '1' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							1: '',
+							2: '',
+							3: '',
+							4: '',
+							5: '',
+						} )
+					),
 				},
 			};
 
@@ -1882,16 +2054,20 @@ describe( 'selectors', () => {
 					selectionEnd: { clientId: '3' },
 				},
 				blocks: {
-					order: {
-						'': [ '5', '4', '3', '2', '1' ],
-					},
-					parents: {
-						1: '',
-						2: '',
-						3: '',
-						4: '',
-						5: '',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '5', '4', '3', '2', '1' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							1: '',
+							2: '',
+							3: '',
+							4: '',
+							5: '',
+						} )
+					),
 				},
 			};
 
@@ -1905,16 +2081,20 @@ describe( 'selectors', () => {
 					selectionEnd: { clientId: '3' },
 				},
 				blocks: {
-					order: {
-						'': [ '5', '4', '3', '2', '1' ],
-					},
-					parents: {
-						1: '',
-						2: '',
-						3: '',
-						4: '',
-						5: '',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '5', '4', '3', '2', '1' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							1: '',
+							2: '',
+							3: '',
+							4: '',
+							5: '',
+						} )
+					),
 				},
 			};
 
@@ -1928,16 +2108,20 @@ describe( 'selectors', () => {
 					selectionEnd: {},
 				},
 				blocks: {
-					order: {
-						'': [ '5', '4', '3', '2', '1' ],
-					},
-					parents: {
-						1: '',
-						2: '',
-						3: '',
-						4: '',
-						5: '',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ '5', '4', '3', '2', '1' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							1: '',
+							2: '',
+							3: '',
+							4: '',
+							5: '',
+						} )
+					),
 				},
 			};
 
@@ -1991,16 +2175,20 @@ describe( 'selectors', () => {
 	describe( 'isBlockMultiSelected', () => {
 		const state = {
 			blocks: {
-				order: {
-					'': [ '5', '4', '3', '2', '1' ],
-				},
-				parents: {
-					1: '',
-					2: '',
-					3: '',
-					4: '',
-					5: '',
-				},
+				order: new Map(
+					Object.entries( {
+						'': [ '5', '4', '3', '2', '1' ],
+					} )
+				),
+				parents: new Map(
+					Object.entries( {
+						1: '',
+						2: '',
+						3: '',
+						4: '',
+						5: '',
+					} )
+				),
 			},
 			selection: {
 				selectionStart: { clientId: '2' },
@@ -2020,16 +2208,20 @@ describe( 'selectors', () => {
 	describe( 'isFirstMultiSelectedBlock', () => {
 		const state = {
 			blocks: {
-				order: {
-					'': [ '5', '4', '3', '2', '1' ],
-				},
-				parents: {
-					1: '',
-					2: '',
-					3: '',
-					4: '',
-					5: '',
-				},
+				order: new Map(
+					Object.entries( {
+						'': [ '5', '4', '3', '2', '1' ],
+					} )
+				),
+				parents: new Map(
+					Object.entries( {
+						1: '',
+						2: '',
+						3: '',
+						4: '',
+						5: '',
+					} )
+				),
 			},
 			selection: {
 				selectionStart: { clientId: '2' },
@@ -2156,10 +2348,12 @@ describe( 'selectors', () => {
 			const state = {
 				draggedBlocks: [ 'block-1_grandparent' ],
 				blocks: {
-					parents: {
-						'block-1': 'block-1_parent',
-						'block-1_parent': 'block-1_grandparent',
-					},
+					parents: new Map(
+						Object.entries( {
+							'block-1': 'block-1_parent',
+							'block-1_parent': 'block-1_grandparent',
+						} )
+					),
 				},
 			};
 			expect( isAncestorBeingDragged( state, 'block-1' ) ).toBe( true );
@@ -2169,10 +2363,12 @@ describe( 'selectors', () => {
 			const state = {
 				draggedBlocks: [ 'block-2_grandparent' ],
 				blocks: {
-					parents: {
-						'block-1': 'block-1_parent',
-						'block-1_parent': 'block-1_grandparent',
-					},
+					parents: new Map(
+						Object.entries( {
+							'block-1': 'block-1_parent',
+							'block-1_parent': 'block-1_grandparent',
+						} )
+					),
 				},
 			};
 			expect( isAncestorBeingDragged( state, 'block-1' ) ).toBe( false );
@@ -2182,10 +2378,12 @@ describe( 'selectors', () => {
 			const state = {
 				draggedBlocks: [],
 				blocks: {
-					parents: {
-						'block-1': 'block-1_parent',
-						'block-1_parent': 'block-1_grandparent',
-					},
+					parents: new Map(
+						Object.entries( {
+							'block-1': 'block-1_parent',
+							'block-1_parent': 'block-1_grandparent',
+						} )
+					),
 				},
 			};
 			expect( isAncestorBeingDragged( state, 'block-1' ) ).toBe( false );
@@ -2230,15 +2428,19 @@ describe( 'selectors', () => {
 							clientId2: {},
 						} )
 					),
-					order: {
-						'': [ 'clientId1' ],
-						clientId1: [ 'clientId2' ],
-						clientId2: [],
-					},
-					parents: {
-						clientId1: '',
-						clientId2: 'clientId1',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ 'clientId1' ],
+							clientId1: [ 'clientId2' ],
+							clientId2: [],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							clientId1: '',
+							clientId2: 'clientId1',
+						} )
+					),
 				},
 				insertionPoint: {
 					rootClientId: undefined,
@@ -2269,13 +2471,17 @@ describe( 'selectors', () => {
 							clientId1: {},
 						} )
 					),
-					order: {
-						'': [ 'clientId1' ],
-						clientId1: [],
-					},
-					parents: {
-						clientId1: '',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ 'clientId1' ],
+							clientId1: [],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							clientId1: '',
+						} )
+					),
 				},
 				insertionPoint: null,
 			};
@@ -2305,15 +2511,19 @@ describe( 'selectors', () => {
 							clientId2: {},
 						} )
 					),
-					order: {
-						'': [ 'clientId1' ],
-						clientId1: [ 'clientId2' ],
-						clientId2: [],
-					},
-					parents: {
-						clientId1: '',
-						clientId2: 'clientId1',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ 'clientId1' ],
+							clientId1: [ 'clientId2' ],
+							clientId2: [],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							clientId1: '',
+							clientId2: 'clientId1',
+						} )
+					),
 				},
 				insertionPoint: null,
 			};
@@ -2343,15 +2553,19 @@ describe( 'selectors', () => {
 							clientId2: {},
 						} )
 					),
-					order: {
-						'': [ 'clientId1', 'clientId2' ],
-						clientId1: [],
-						clientId2: [],
-					},
-					parents: {
-						clientId1: '',
-						clientId2: '',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ 'clientId1', 'clientId2' ],
+							clientId1: [],
+							clientId2: [],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							clientId1: '',
+							clientId2: '',
+						} )
+					),
 				},
 				insertionPoint: null,
 			};
@@ -2381,15 +2595,19 @@ describe( 'selectors', () => {
 							clientId2: {},
 						} )
 					),
-					order: {
-						'': [ 'clientId1', 'clientId2' ],
-						clientId1: [],
-						clientId2: [],
-					},
-					parents: {
-						clientId1: '',
-						clientId2: '',
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ 'clientId1', 'clientId2' ],
+							clientId1: [],
+							clientId2: [],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							clientId1: '',
+							clientId2: '',
+						} )
+					),
 				},
 				insertionPoint: null,
 			};
@@ -2696,9 +2914,11 @@ describe( 'selectors', () => {
 							block2: {},
 						} )
 					),
-					parents: {
-						block2: 'block1',
-					},
+					parents: new Map(
+						Object.entries( {
+							block2: 'block1',
+						} )
+					),
 				},
 				blockListSettings: {
 					block1: {},
@@ -2732,10 +2952,12 @@ describe( 'selectors', () => {
 							block3: {},
 						} )
 					),
-					parents: {
-						block2: 'block1',
-						block3: 'block2',
-					},
+					parents: new Map(
+						Object.entries( {
+							block2: 'block1',
+							block3: 'block2',
+						} )
+					),
 				},
 				blockListSettings: {
 					block1: {},
@@ -2770,9 +2992,11 @@ describe( 'selectors', () => {
 							block3: {},
 						} )
 					),
-					parents: {
-						block3: 'block2',
-					},
+					parents: new Map(
+						Object.entries( {
+							block3: 'block2',
+						} )
+					),
 				},
 				blockListSettings: {
 					block1: {},
@@ -2807,9 +3031,11 @@ describe( 'selectors', () => {
 							block3: {},
 						} )
 					),
-					parents: {
-						block3: 'block2',
-					},
+					parents: new Map(
+						Object.entries( {
+							block3: 'block2',
+						} )
+					),
 				},
 				blockListSettings: {
 					block1: {},
@@ -2842,9 +3068,11 @@ describe( 'selectors', () => {
 							block2: {},
 						} )
 					),
-					parents: {
-						block2: 'block1',
-					},
+					parents: new Map(
+						Object.entries( {
+							block2: 'block1',
+						} )
+					),
 				},
 				blockListSettings: {
 					block1: {},
@@ -2878,9 +3106,11 @@ describe( 'selectors', () => {
 							block2: {},
 						} )
 					),
-					parents: {
-						block2: 'block1',
-					},
+					parents: new Map(
+						Object.entries( {
+							block2: 'block1',
+						} )
+					),
 				},
 				blockListSettings: {
 					block1: {},
@@ -2965,13 +3195,15 @@ describe( 'selectors', () => {
 				blocks: {
 					byClientId: new Map(),
 					attributes: new Map(),
-					order: {},
-					parents: {},
-					tree: {
-						'': {
-							innerBlocks: [],
-						},
-					},
+					order: new Map(),
+					parents: new Map(),
+					tree: new Map(
+						Object.entries( {
+							'': {
+								innerBlocks: [],
+							},
+						} )
+					),
 				},
 				settings: {
 					__experimentalReusableBlocks: [
@@ -3044,27 +3276,33 @@ describe( 'selectors', () => {
 							block4: {},
 						} )
 					),
-					order: {
-						'': [ 'block3', 'block4' ],
-					},
-					parents: {
-						block3: '',
-						block4: '',
-					},
-					tree: {
-						block3: {
-							clientId: 'block3',
-							name: 'core/test-block-a',
-							attributes: {},
-							innerBlocks: [],
-						},
-						block4: {
-							clientId: 'block4',
-							name: 'core/test-block-a',
-							attributes: {},
-							innerBlocks: [],
-						},
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ 'block3', 'block4' ],
+						} )
+					),
+					parents: new Map(
+						Object.entries( {
+							block3: '',
+							block4: '',
+						} )
+					),
+					tree: new Map(
+						Object.entries( {
+							block3: {
+								clientId: 'block3',
+								name: 'core/test-block-a',
+								attributes: {},
+								innerBlocks: [],
+							},
+							block4: {
+								clientId: 'block4',
+								name: 'core/test-block-a',
+								attributes: {},
+								innerBlocks: [],
+							},
+						} )
+					),
 					controlledInnerBlocks: {},
 				},
 				settings: {
@@ -3156,19 +3394,23 @@ describe( 'selectors', () => {
 							block1: { attribute: {} },
 						} )
 					),
-					order: {
-						'': [ 'block1' ],
-					},
-					tree: {
-						block1: {
-							clientId: 'block1',
-							name: 'core/test-block-b',
-							attributes: {},
-							innerBlocks: [],
-						},
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ 'block1' ],
+						} )
+					),
+					tree: new Map(
+						Object.entries( {
+							block1: {
+								clientId: 'block1',
+								name: 'core/test-block-b',
+								attributes: {},
+								innerBlocks: [],
+							},
+						} )
+					),
 					controlledInnerBlocks: {},
-					parents: {},
+					parents: new Map(),
 				},
 				preferences: {
 					insertUsage: {},
@@ -3188,8 +3430,8 @@ describe( 'selectors', () => {
 				blocks: {
 					byClientId: new Map(),
 					attributes: new Map(),
-					order: {},
-					parents: {},
+					order: new Map(),
+					parents: new Map(),
 					cache: {},
 				},
 				preferences: {
@@ -3283,8 +3525,8 @@ describe( 'selectors', () => {
 				blocks: {
 					byClientId: new Map(),
 					attributes: new Map(),
-					order: {},
-					parents: {},
+					order: new Map(),
+					parents: new Map(),
 					cache: {},
 				},
 				settings: {},
@@ -3323,8 +3565,8 @@ describe( 'selectors', () => {
 				blocks: {
 					byClientId: new Map(),
 					attributes: new Map(),
-					order: {},
-					parents: {},
+					order: new Map(),
+					parents: new Map(),
 					cache: {},
 				},
 				settings: {},
@@ -3350,11 +3592,13 @@ describe( 'selectors', () => {
 							block2: {},
 						} )
 					),
-					order: {},
-					parents: {
-						block1: '',
-						block2: 'block1',
-					},
+					order: new Map(),
+					parents: new Map(
+						Object.entries( {
+							block1: '',
+							block2: 'block1',
+						} )
+					),
 					cache: {},
 					controlledInnerBlocks: {},
 				},
@@ -3390,19 +3634,23 @@ describe( 'selectors', () => {
 							block1: { attribute: {} },
 						} )
 					),
-					order: {
-						'': [ 'block1' ],
-					},
-					tree: {
-						block1: {
-							clientId: 'block1',
-							name: 'core/with-tranforms-c',
-							attributes: {},
-							innerBlocks: [],
-						},
-					},
+					order: new Map(
+						Object.entries( {
+							'': [ 'block1' ],
+						} )
+					),
+					tree: new Map(
+						Object.entries( {
+							block1: {
+								clientId: 'block1',
+								name: 'core/with-tranforms-c',
+								attributes: {},
+								innerBlocks: [],
+							},
+						} )
+					),
 					controlledInnerBlocks: {},
-					parents: {},
+					parents: new Map(),
 				},
 				preferences: {
 					insertUsage: {},
@@ -3431,8 +3679,8 @@ describe( 'selectors', () => {
 				blocks: {
 					byClientId: new Map(),
 					attributes: new Map(),
-					order: {},
-					parents: {},
+					order: new Map(),
+					parents: new Map(),
 					cache: {},
 				},
 				preferences: {
@@ -3650,20 +3898,24 @@ describe( 'selectors', () => {
 
 	describe( 'getLowestCommonAncestorWithSelectedBlock', () => {
 		const blocks = {
-			order: {
-				'': [ 'a', 'b' ],
-				a: [ 'c', 'd' ],
-				d: [ 'e' ],
-				b: [ 'f' ],
-			},
-			parents: {
-				a: '',
-				b: '',
-				c: 'a',
-				d: 'a',
-				e: 'd',
-				f: 'b',
-			},
+			order: new Map(
+				Object.entries( {
+					'': [ 'a', 'b' ],
+					a: [ 'c', 'd' ],
+					d: [ 'e' ],
+					b: [ 'f' ],
+				} )
+			),
+			parents: new Map(
+				Object.entries( {
+					a: '',
+					b: '',
+					c: 'a',
+					d: 'a',
+					e: 'd',
+					f: 'b',
+				} )
+			),
 		};
 
 		it( 'should not be defined if there is no block selected', () => {
@@ -3762,13 +4014,15 @@ describe( 'selectors', () => {
 				},
 			},
 			blocks: {
-				parents: {
-					'client-id-01': '',
-					'client-id-02': 'client-id-01',
-					'client-id-03': 'client-id-02',
-					'client-id-04': 'client-id-03',
-					'client-id-05': 'client-id-03',
-				},
+				parents: new Map(
+					Object.entries( {
+						'client-id-01': '',
+						'client-id-02': 'client-id-01',
+						'client-id-03': 'client-id-02',
+						'client-id-04': 'client-id-03',
+						'client-id-05': 'client-id-03',
+					} )
+				),
 				byClientId: new Map(
 					Object.entries( {
 						'client-id-01': {
@@ -3800,9 +4054,11 @@ describe( 'selectors', () => {
 					'client-id-04': {},
 					'client-id-05': {},
 				},
-				order: {
-					'client-id-03': [ 'client-id-04', 'client-id-05' ],
-				},
+				order: new Map(
+					Object.entries( {
+						'client-id-03': [ 'client-id-04', 'client-id-05' ],
+					} )
+				),
 				controlledInnerBlocks: {},
 			},
 		};
@@ -4306,8 +4562,8 @@ describe( 'getInserterItems with core blocks prioritization', () => {
 			blocks: {
 				byClientId: new Map(),
 				attributes: new Map(),
-				order: {},
-				parents: {},
+				order: new Map(),
+				parents: new Map(),
 				cache: {},
 			},
 			settings: {},
@@ -4335,11 +4591,13 @@ describe( '__unstableGetClientIdWithClientIdsTree', () => {
 	it( "should return a stripped down block object containing only its client ID and its inner blocks' client IDs", () => {
 		const state = {
 			blocks: {
-				order: {
-					'': [ 'foo' ],
-					foo: [ 'bar', 'baz' ],
-					bar: [ 'qux' ],
-				},
+				order: new Map(
+					Object.entries( {
+						'': [ 'foo' ],
+						foo: [ 'bar', 'baz' ],
+						bar: [ 'qux' ],
+					} )
+				),
 			},
 		};
 
@@ -4361,11 +4619,13 @@ describe( '__unstableGetClientIdsTree', () => {
 	it( "should return the full content tree starting from the given root, consisting of stripped down block object containing only its client ID and its inner blocks' client IDs", () => {
 		const state = {
 			blocks: {
-				order: {
-					'': [ 'foo' ],
-					foo: [ 'bar', 'baz' ],
-					bar: [ 'qux' ],
-				},
+				order: new Map(
+					Object.entries( {
+						'': [ 'foo' ],
+						foo: [ 'bar', 'baz' ],
+						bar: [ 'qux' ],
+					} )
+				),
 			},
 		};
 
@@ -4381,11 +4641,13 @@ describe( '__unstableGetClientIdsTree', () => {
 	it( "should return the full content tree starting from the root, consisting of stripped down block object containing only its client ID and its inner blocks' client IDs", () => {
 		const state = {
 			blocks: {
-				order: {
-					'': [ 'foo' ],
-					foo: [ 'bar', 'baz' ],
-					bar: [ 'qux' ],
-				},
+				order: new Map(
+					Object.entries( {
+						'': [ 'foo' ],
+						foo: [ 'bar', 'baz' ],
+						bar: [ 'qux' ],
+					} )
+				),
 			},
 		};
 
