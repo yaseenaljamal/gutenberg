@@ -83,7 +83,7 @@ function gutenberg_get_layout_style( $selector, $layout, $has_block_gap_support 
 		$wide_max_width_value = $wide_size ? $wide_size : $content_size;
 
 		// Make sure there is a single CSS rule, and all tags are stripped for security.
-		// TODO: Use `safecss_filter_attr` instead - once https://core.trac.wordpress.org/ticket/46197 is patched.
+		// TODO: Use `safecss_filter_attr` instead when the minimum required WP version is >= 6.1.
 		$all_max_width_value  = wp_strip_all_tags( explode( ';', $all_max_width_value )[0] );
 		$wide_max_width_value = wp_strip_all_tags( explode( ';', $wide_max_width_value )[0] );
 
@@ -337,9 +337,8 @@ function gutenberg_render_layout_support_flag( $block_content, $block ) {
 			$child_layout_styles[] = array(
 				'selector'     => ".$container_content_class",
 				'declarations' => array(
-					'flex-shrink' => '0',
-					'flex-basis'  => $block['attrs']['style']['layout']['flexSize'],
-					'box-sizing'  => 'border-box',
+					'flex-basis' => $block['attrs']['style']['layout']['flexSize'],
+					'box-sizing' => 'border-box',
 				),
 			);
 		} elseif ( 'fill' === $block['attrs']['style']['layout']['selfStretch'] ) {
