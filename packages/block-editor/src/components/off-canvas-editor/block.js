@@ -42,7 +42,7 @@ import useBlockDisplayInformation from '../use-block-display-information';
 import { useBlockLock } from '../block-lock';
 
 function ListViewBlock( {
-	block,
+	block: { clientId },
 	isDragged,
 	isSelected,
 	isBranchSelected,
@@ -60,7 +60,6 @@ function ListViewBlock( {
 } ) {
 	const cellRef = useRef( null );
 	const [ isHovered, setIsHovered ] = useState( false );
-	const { clientId, attributes } = block;
 
 	const { isLocked, isContentLocked } = useBlockLock( clientId );
 	const forceSelectionContentLock = useSelect(
@@ -87,12 +86,12 @@ function ListViewBlock( {
 		( isSelected &&
 			selectedClientIds[ selectedClientIds.length - 1 ] === clientId );
 
-	const { replaceBlock, toggleBlockHighlight } =
+	const { insertBlock, replaceBlock, toggleBlockHighlight } =
 		useDispatch( blockEditorStore );
 
 	const blockInformation = useBlockDisplayInformation( clientId );
-	const blockName = useSelect(
-		( select ) => select( blockEditorStore ).getBlockName( clientId ),
+	const block = useSelect(
+		( select ) => select( blockEditorStore ).getBlock( clientId ),
 		[ clientId ]
 	);
 
@@ -100,7 +99,7 @@ function ListViewBlock( {
 	// since that menu is part of the toolbar in the editor canvas.
 	// List View respects this by also hiding the block settings menu.
 	const showBlockActions = hasBlockSupport(
-		blockName,
+		block.name,
 		'__experimentalToolbar',
 		true
 	);
@@ -369,24 +368,38 @@ function ListViewBlock( {
 											const newLink = createBlock(
 												'core/navigation-link'
 											);
-											const newSubmenu = createBlock(
-												'core/navigation-submenu',
-												attributes,
-												block.innerBlocks
-													? [
-															...block.innerBlocks,
-															newLink,
-													  ]
-													: [ newLink ]
-											);
-											replaceBlock(
-												clientId,
-												newSubmenu
-											);
+											if (
+												block.name ===
+												'core/navigation-submenu'
+											) {
+												const updateSelectionOnInsert = false;
+												insertBlock(
+													newLink,
+													block.innerBlocks.length,
+													clientId,
+													updateSelectionOnInsert
+												);
+											} else {
+												// Convert to a submenu if the block currently isn't one.
+												const newSubmenu = createBlock(
+													'core/navigation-submenu',
+													block.attributes,
+													block.innerBlocks
+														? [
+																...block.innerBlocks,
+																newLink,
+														  ]
+														: [ newLink ]
+												);
+												replaceBlock(
+													clientId,
+													newSubmenu
+												);
+											}
 											onClose();
 										} }
 									>
-										{ __( 'Add a submenu item' ) }
+										{ __( 'Add submenu item' ) }
 									</MenuItem>
 								) }
 							</BlockSettingsDropdown>
