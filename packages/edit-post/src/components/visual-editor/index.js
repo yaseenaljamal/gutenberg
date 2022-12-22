@@ -119,6 +119,7 @@ export default function VisualEditor( { styles } ) {
 		editedPostTemplate = {},
 		wrapperBlockName,
 		wrapperUniqueId,
+		isBlockBasedTheme,
 	} = useSelect( ( select ) => {
 		const {
 			isFeatureActive,
@@ -137,7 +138,8 @@ export default function VisualEditor( { styles } ) {
 			_wrapperBlockName = 'core/post-content';
 		}
 
-		const supportsTemplateMode = getEditorSettings().supportsTemplateMode;
+		const editorSettings = getEditorSettings();
+		const supportsTemplateMode = editorSettings.supportsTemplateMode;
 		const canEditTemplate = select( coreStore ).canUser(
 			'create',
 			'templates'
@@ -155,6 +157,7 @@ export default function VisualEditor( { styles } ) {
 					: undefined,
 			wrapperBlockName: _wrapperBlockName,
 			wrapperUniqueId: getCurrentPostId(),
+			isBlockBasedTheme: editorSettings.__unstableIsBlockBasedTheme,
 		};
 	}, [] );
 	const { isCleanNewPost } = useSelect( editorStore );
@@ -302,6 +305,17 @@ export default function VisualEditor( { styles } ) {
 		titleRef?.current?.focus();
 	}, [ isWelcomeGuideVisible, isCleanNewPost ] );
 
+	styles = useMemo(
+		() => [
+			...styles,
+			{
+				// We should move this in to future to the body.
+				css: `.edit-post-visual-editor__post-title-wrapper{margin-top:4rem}`,
+			},
+		],
+		[ styles ]
+	);
+
 	return (
 		<BlockTools
 			__unstableContentRef={ ref }
@@ -336,6 +350,7 @@ export default function VisualEditor( { styles } ) {
 				>
 					<MaybeIframe
 						shouldIframe={
+							( isBlockBasedTheme && ! hasMetaBoxes ) ||
 							isTemplateMode ||
 							deviceType === 'Tablet' ||
 							deviceType === 'Mobile'
@@ -370,10 +385,15 @@ export default function VisualEditor( { styles } ) {
 						{ ! isTemplateMode && (
 							<div
 								className={ classnames(
+									// This wrapper div should have the same
+									// classes as the block list beneath.
+									'is-root-container',
+									'block-editor-block-list__layout',
 									'edit-post-visual-editor__post-title-wrapper',
 									{
 										'is-focus-mode': isFocusMode,
-									}
+									},
+									blockListLayoutClass
 								) }
 								contentEditable={ false }
 							>
