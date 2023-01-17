@@ -28,7 +28,6 @@ import {
 	store as blockEditorStore,
 	BlockAlignmentControl,
 	__experimentalImageEditor as ImageEditor,
-	__experimentalImageEditingProvider as ImageEditingProvider,
 	__experimentalGetElementClassName,
 	__experimentalUseBorderProps as useBorderProps,
 } from '@wordpress/block-editor';
@@ -439,6 +438,7 @@ export default function Image( {
 			</InspectorControls>
 			<InspectorControls __experimentalGroup="advanced">
 				<TextControl
+					__nextHasNoMarginBottom
 					label={ __( 'Title attribute' ) }
 					value={ title || '' }
 					onChange={ onSetTitle }
@@ -518,13 +518,20 @@ export default function Image( {
 	if ( canEditImage && isEditingImage ) {
 		img = (
 			<ImageEditor
-				borderProps={ isRounded ? undefined : borderProps }
+				id={ id }
 				url={ url }
 				width={ width }
 				height={ height }
 				clientWidth={ clientWidth }
 				naturalHeight={ naturalHeight }
 				naturalWidth={ naturalWidth }
+				onSaveImage={ ( imageAttributes ) =>
+					setAttributes( imageAttributes )
+				}
+				onFinishEditing={ () => {
+					setIsEditingImage( false );
+				} }
+				borderProps={ isRounded ? undefined : borderProps }
 			/>
 		);
 	} else if ( ! isResizable || ! imageWidthWithinContainer ) {
@@ -609,18 +616,7 @@ export default function Image( {
 	}
 
 	return (
-		<ImageEditingProvider
-			id={ id }
-			url={ url }
-			naturalWidth={ naturalWidth }
-			naturalHeight={ naturalHeight }
-			clientWidth={ clientWidth }
-			onSaveImage={ ( imageAttributes ) =>
-				setAttributes( imageAttributes )
-			}
-			isEditing={ isEditingImage }
-			onFinishEditing={ () => setIsEditingImage( false ) }
-		>
+		<>
 			{ /* Hide controls during upload to avoid component remount,
 				which causes duplicated image upload. */ }
 			{ ! temporaryURL && controls }
@@ -648,6 +644,6 @@ export default function Image( {
 						}
 					/>
 				) }
-		</ImageEditingProvider>
+		</>
 	);
 }
