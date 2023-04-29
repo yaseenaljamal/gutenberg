@@ -175,25 +175,6 @@ $ wp-env destroy
 $ wp-env start
 ```
 
-### 7. Debug mode and inspecting the generated dockerfile.
-
-`wp-env` uses docker behind the scenes. Inspecting the generated docker-compose file can help to understand what's going on.
-
-Start `wp-env` in debug mode
-
-```sh
-wp-env start --debug
-```
-
-`wp-env` will output its config which includes `dockerComposeConfigPath`.
-
-```sh
-ℹ Config:
-	...
-	"dockerComposeConfigPath": "/Users/$USERNAME/.wp-env/5a619d332a92377cd89feb339c67b833/docker-compose.yml",
-	...
-```
-
 ## Using included WordPress PHPUnit test files
 
 Out of the box `wp-env` includes the [WordPress' PHPUnit test files](https://develop.svn.wordpress.org/trunk/tests/phpunit/) corresponding to the version of WordPress installed. There is an environment variable, `WP_TESTS_DIR`, which points to the location of these files within each container. By including these files in the environment, we remove the need for you to use a package or install and mount them yourself. If you do not want to use these files, you should ignore the `WP_TESTS_DIR` environment variable and load them from the location of your choosing.
@@ -315,20 +296,17 @@ Positionals:
 
 The run command can be used to open shell sessions or invoke WP-CLI commands.
 
-<div class="callout callout-alert">
-In some cases, `wp-env` may consume options that you are attempting to pass to
-the container. This happens with options that `wp-env` has already declared,
-such as `--env-cwd`, `--debug`, `--help`, and `--version`. When this happens, you should fall
-back to using quotation marks; `wp-env` considers everything inside the
+<div class="callout callout-alert">In some cases, <code>wp-env</code> may consume options that you are attempting to pass to
+the container. This happens with options that <code>wp-env</code> has already declared,
+such as <code>--env-cwd</code>, <code>--debug</code>, <code>--help</code>, and <code>--version</code>. When this happens, you should fall
+back to using quotation marks; <code>wp-env</code> considers everything inside the
 quotation marks to be command argument.
 
-For example, to ask `WP-CLI` for its help text:
-
-```sh
-wp-env run cli "wp --help"
-```
-
-Without the quotation marks, `wp-env` will print its own help text instead of
+For example, to ask <code>WP-CLI</code> for its help text:
+<pre>sh
+<code class="language-sh">wp-env run cli "wp --help"</code></pre>
+	
+Without the quotation marks, <code>wp-env</code> will print its own help text instead of
 passing it to the container. If you experience any problems where the command
 is not being passed correctly, fall back to using quotation marks.
 
@@ -412,13 +390,6 @@ Success: Installed 1 of 1 plugins.
 ✔ Ran `plugin install custom-post-type-ui` in 'cli'. (in 6s 483ms)
 ```
 
-**NOTE**: Depending on your host OS, you may experience errors when trying to install plugins or themes (e.g. `Warning: Could not create directory.`). This is typically because the user ID used within the container does not have write access to the mounted directories created by `wp-env`. To resolve this, run the `docker-compose` command directly from the directory created by `wp-env` and add `-u $(id -u)` and `-e HOME=/tmp` the `run` command as options:
-
-```sh
-$ cd ~/wp-env/500cd328b649d63e882d5c4695871d04
-$ docker-compose run --rm -u $(id -u) -e HOME=/tmp cli [plugin|theme] install <plugin|theme>
-```
-
 ### `wp-env destroy`
 
 ```sh
@@ -448,7 +419,7 @@ Options:
 
 ### `wp-env install-path`
 
-Outputs the absolute path to the WordPress environment files.
+Get the path where all of the environment files are stored. This includes the Docker files, WordPress, PHPUnit files, and any sources that were downloaded.
 
 Example:
 
