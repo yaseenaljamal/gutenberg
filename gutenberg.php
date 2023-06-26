@@ -5,8 +5,8 @@
  * Description: Zip from trunk (the default branch) of WordPress Gutenberg GitHub repo: Gutenberg This is the development plugin for the new block editor in core. If you have trouble seeing updates, go to <em>Git Updater > Settings</em>  and use the button <em>Refresh Cache</em>. Ping @bph on WPSlack for questions. Or <a href="https://github.com/bph/gutenberg/discussions/new">post on the Discussion board</a>.
 
  * Requires at least: 6.1
- * Requires PHP: 5.6
- * Version: 16.2.20230624
+ * Requires PHP: 5.6cd 
+ * Version: 16.2.20230626
  * Author: Gutenberg Team and Birgit Pauli-Haack (Gutenberg Times)
  * Text Domain: gutenberg
  * GitHub Plugin URI: bph/gutenberg
