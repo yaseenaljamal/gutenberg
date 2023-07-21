@@ -8,6 +8,8 @@
 /**
  * Renders the `core/footnotes` block on the server.
  *
+ * @since 6.3.0
+ *
  * @param array    $attributes Block attributes.
  * @param string   $content    Block default content.
  * @param WP_Block $block      Block instance.
@@ -57,6 +59,8 @@ function render_block_core_footnotes( $attributes, $content, $block ) {
 
 /**
  * Registers the `core/footnotes` block on the server.
+ *
+ * @since 6.3.0
  */
 function register_block_core_footnotes() {
 	foreach ( array( 'post', 'page' ) as $post_type ) {
@@ -84,9 +88,11 @@ add_action(
 	/**
 	 * Saves the footnotes meta value to the revision.
 	 *
+	 * @since 6.3.0
+	 *
 	 * @param int $revision_id The revision ID.
 	 */
-	function( $revision_id ) {
+	static function( $revision_id ) {
 		$post_id = wp_is_post_revision( $revision_id );
 
 		if ( $post_id ) {
@@ -107,7 +113,7 @@ add_action(
 	 *
 	 * @param int $revision_id The revision ID.
 	 */
-	function( $revision_id ) {
+	static function( $revision_id ) {
 		global $_gutenberg_revision_id;
 		$_gutenberg_revision_id = $revision_id;
 	}
@@ -127,9 +133,11 @@ foreach ( array( 'post', 'page' ) as $post_type ) {
 		 * available at the time, so we have to add it afterwards through the
 		 * `"rest_after_insert_{$post_type}"` action.
 		 *
+		 * @since 6.3.0
+		 *
 		 * @param WP_Post $post The post object.
 		 */
-		function( $post ) {
+		static function( $post ) {
 			global $_gutenberg_revision_id;
 
 			if ( $_gutenberg_revision_id ) {
@@ -155,10 +163,12 @@ add_action(
 	/**
 	 * Restores the footnotes meta value from the revision.
 	 *
+	 * @since 6.3.0
+	 *
 	 * @param int $post_id      The post ID.
 	 * @param int $revision_id  The revision ID.
 	 */
-	function( $post_id, $revision_id ) {
+	static function( $post_id, $revision_id ) {
 		$footnotes = get_post_meta( $revision_id, 'footnotes', true );
 
 		if ( $footnotes ) {
@@ -176,11 +186,12 @@ add_filter(
 	/**
 	 * Adds the footnotes field to the revision.
 	 *
-	 * @param array $fields The revision fields.
+	 * @since 6.3.0
 	 *
+	 * @param array $fields The revision fields.
 	 * @return array The revision fields.
 	 */
-	function( $fields ) {
+	static function( $fields ) {
 		$fields['footnotes'] = __( 'Footnotes' );
 		return $fields;
 	}
@@ -191,14 +202,15 @@ add_filter(
 	/**
 	 * Gets the footnotes field from the revision.
 	 *
+	 * @since 6.3.0
+	 *
 	 * @param string $revision_field The field value, but $revision->$field
 	 *                               (footnotes) does not exist.
 	 * @param string $field          The field name, in this case "footnotes".
 	 * @param object $revision       The revision object to compare against.
-	 *
 	 * @return string The field value.
 	 */
-	function( $revision_field, $field, $revision ) {
+	static function( $revision_field, $field, $revision ) {
 		return get_metadata( 'post', $revision->ID, $field, true );
 	},
 	10,
