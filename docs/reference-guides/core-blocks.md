@@ -248,7 +248,7 @@ Hide and show additional content. ([Source](https://github.com/WordPress/gutenbe
 
 -	**Name:** core/details
 -	**Category:** text
--	**Supports:** align (full, wide), color (background, gradients, link, text), spacing (margin, padding), typography (fontSize, lineHeight), ~~html~~
+-	**Supports:** align (full, wide), color (background, gradients, link, text), layout (~~allowEditing~~), spacing (blockGap, margin, padding), typography (fontSize, lineHeight), ~~html~~
 -	**Attributes:** showContent, summary
 
 ## Embed
@@ -266,7 +266,7 @@ Add a link to a downloadable file. ([Source](https://github.com/WordPress/gutenb
 
 -	**Name:** core/file
 -	**Category:** media
--	**Supports:** align, anchor, color (background, gradients, link, ~~text~~)
+-	**Supports:** align, anchor, color (background, gradients, link, ~~text~~), spacing (margin, padding)
 -	**Attributes:** displayPreview, downloadButtonText, fileId, fileName, href, id, previewHeight, showDownloadButton, textLinkHref, textLinkTarget
 
 ## Footnotes
@@ -311,7 +311,7 @@ Introduce new sections and organize content to help visitors (and search engines
 
 -	**Name:** core/heading
 -	**Category:** text
--	**Supports:** __unstablePasteTextInline, align (full, wide), anchor, className, color (background, gradients, link, text), spacing (margin, padding), typography (fontSize, lineHeight)
+-	**Supports:** align (full, wide), anchor, className, color (background, gradients, link, text), spacing (margin, padding), typography (fontSize, lineHeight)
 -	**Attributes:** content, level, placeholder, textAlign
 
 ## Home Link
