@@ -78,7 +78,7 @@
 		"remove-accents": "^0.5.0",
 		"use-lilius": "^2.0.1",
 		"uuid": "^8.3.0",
-		"valtio": "1.7.0"
+		"valtio": "1.11.2"
 	},
 	"peerDependencies": {
 		"react": "^18.0.0",
